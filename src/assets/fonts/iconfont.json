@@ -6,6 +6,41 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "17770850",
+      "name": "用户",
+      "font_class": "yonghu",
+      "unicode": "e62e",
+      "unicode_decimal": 58926
+    },
+    {
+      "icon_id": "3199543",
+      "name": "意见反馈",
+      "font_class": "drxx66",
+      "unicode": "e702",
+      "unicode_decimal": 59138
+    },
+    {
+      "icon_id": "3040389",
+      "name": "预警及授信后监控",
+      "font_class": "yujingjishouxinhoujiankong",
+      "unicode": "e6dc",
+      "unicode_decimal": 59100
+    },
+    {
+      "icon_id": "17541046",
+      "name": "视频",
+      "font_class": "shipin2",
+      "unicode": "eddf",
+      "unicode_decimal": 60895
+    },
+    {
+      "icon_id": "18986528",
+      "name": "统计分析",
+      "font_class": "tongjifenxi1",
+      "unicode": "e64a",
+      "unicode_decimal": 58954
+    },
+    {
       "icon_id": "6239139",
       "name": "user",
       "font_class": "user",
