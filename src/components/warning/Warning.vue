@@ -134,15 +134,27 @@
         margin-left: 20px;
     }
 
-    .el-select /deep/ .el-input__inner, .el-input /deep/ .el-input__inner {
+    .el-input /deep/ .el-input__inner {
         height: 32px;
         font-size: 12px;
         border-radius: 0;
         border: 1px solid #cccccc;
     }
 
-    .el-select /deep/ .el-input__inner {
-        width: 100px;
+    .el-date-editor--daterange {
+        height: 32px;
+        border-radius: 0;
+
+        /deep/ .el-range__icon, /deep/ .el-range-input,/deep/ .el-range__close-icon {
+            height: 30px;
+            margin-bottom: 1px;
+            font-size: 12px;
+        }
+
+        /deep/ .el-range-separator {
+            height: 30px;
+            margin-bottom: 2px;
+        }
     }
 
     .el-button {

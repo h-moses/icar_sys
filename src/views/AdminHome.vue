@@ -44,7 +44,6 @@
                         <i :class="menu_icons[id]"/>
                         <template slot="title">
                             <span>{{item}}</span>
-                            <span>{{name}}</span>
                         </template>
                     </el-menu-item>
                 </el-menu>

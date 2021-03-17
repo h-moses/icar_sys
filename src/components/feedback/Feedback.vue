@@ -8,9 +8,9 @@
 
         <el-card v-loading="loading">
             <el-form :inline="true" :model="feedbackForm" ref="searchUserFormRef">
-                <el-form-item label="工单编号" prop="feedback_id">
-                    <el-input placeholder="请输入工单编号" v-model="feedbackForm.feedback_id"></el-input>
-                </el-form-item>
+<!--                <el-form-item label="工单编号" prop="feedback_id">-->
+<!--                    <el-input placeholder="请输入工单编号" v-model="feedbackForm.feedback_id"></el-input>-->
+<!--                </el-form-item>-->
                 <el-form-item label="联系电话" prop="user_phone">
                     <el-input placeholder="请输入联系电话" v-model="feedbackForm.user_phone"></el-input>
                 </el-form-item>

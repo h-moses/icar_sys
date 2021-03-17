@@ -7,11 +7,19 @@
         </el-breadcrumb>
         <el-card v-loading="loading">
             <el-form :inline="true" :model="queryLogForm" ref="queryLogFormRules">
-                <el-form-item label="日志时间" prop="queryLogForm">
-                    <el-input placeholder="请输入日志时间" v-model="queryLogForm.queryLogForm"></el-input>
+                <el-form-item label="日志时间" prop="logDateTime">
+                    <el-date-picker
+                            format="yyyy 年 MM 月 dd 日"
+                            placeholder="选择日期"
+                            type="date"
+                            v-model="queryLogForm.logDateTime"
+                            value-format="yyyy-MM-dd">
+                    </el-date-picker>
                 </el-form-item>
-                <el-form-item label="日志类别" prop="logType">
-                    <el-input placeholder="请输入日志类别" v-model="queryLogForm.logType"></el-input>
+                <el-form-item label="日志类型" prop="logType">
+                    <el-select placeholder="请选择日志类型" v-model="queryLogForm.logType" clearable>
+                        <el-option :key="item.value" :label="item.label" :value="item.value" v-for="item in this.logTypes"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item>
                     <el-button @click="searchLog" icon="el-icon-search" plain size="small" type="primary">查询</el-button>
@@ -69,6 +77,16 @@
                     logDateTime: '',
                     logType: ''
                 },
+                logTypes: [
+                    {
+                        'value': 0,
+                        'label': '错误'
+                    },
+                    {
+                        'value': 1,
+                        'label': '警告'
+                    }
+                ],
                 queryLogFormRules: {},
                 logList: []
             }
@@ -96,10 +114,6 @@
         font-size: 12px;
         border-radius: 0;
         border: 1px solid #cccccc;
-    }
-
-    .el-select /deep/ .el-input__inner {
-        width: 100px;
     }
 
     .el-button {
