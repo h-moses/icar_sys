@@ -31,13 +31,13 @@
                     admin_pwd: ''
                 },
                 loginFormRules: {
-                    username: [
+                    admin_name: [
                         {required: true, message: '请输入登录账号', trigger: 'blur'},
-                        {min: 3, max: 10, message: '长度在3到10个字符', trigger: 'blur'}
+                        // {min: 3, max: 10, message: '长度在3到10个字符', trigger: 'blur'}
                     ],
-                    password: [
+                    admin_pwd: [
                         {required: true, message: '请输入密码', trigger: 'blur'},
-                        {min: 6, max: 15, message: '长度在6到15位', trigger: 'blur'}
+                        // {min: 6, max: 15, message: '长度在6到15位', trigger: 'blur'}
                     ]
                 }
             }
@@ -109,7 +109,10 @@
         justify-content: flex-end;
 
         .el-button {
-            width: 100%;
+            width: 100px;
+            height: 40px;
+            background-color: #849FC4;
+            border: 1px solid #cccccc;
         }
     }
 </style>

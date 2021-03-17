@@ -5,29 +5,34 @@
             <el-breadcrumb-item :to="{path:'/adminHome'}">首页</el-breadcrumb-item>
             <el-breadcrumb-item>预警管理</el-breadcrumb-item>
         </el-breadcrumb>
-        <el-card>
-            <el-form :inline="true" :model="warningForm" ref="searchWarningFormRef">
+        <el-card v-loading="loading">
+            <el-form :inline="true" :model="queryWarningForm" ref="searchWarningFormRef">
                 <el-form-item label="登录账号" prop="user_name">
-                    <el-input placeholder="请输入登录账号" v-model="warningForm.user_name"></el-input>
+                    <el-input placeholder="请输入登录账号" v-model="queryWarningForm.user_name"></el-input>
                 </el-form-item>
                 <el-form-item label="预警时间" prop="selectedDate">
                     <el-date-picker
+                            end-placeholder="结束日期"
+                            format="yyyy 年 MM 月 dd 日"
                             placeholder="选择日期"
-                            type="date"
-                            v-model="warningForm.selectedDate">
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            type="daterange"
+                            v-model="queryWarningForm.selectedDate"
+                            value-format="yyyy-MM-dd">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item>
-                    <el-button icon="el-icon-search" plain size="small" type="primary">查询</el-button>
+                    <el-button @click="searchWarning" icon="el-icon-search" plain size="small" type="primary">查询</el-button>
                 </el-form-item>
             </el-form>
-            <el-table :data="this.$store.state.warning.warningList" border stripe v-loading="loading">
+            <el-table :data="this.warningList" border stripe v-loading="loading">
                 <el-table-column align="center" label="序号" type="index" width="70px"></el-table-column>
-                <el-table-column align="center" label="预警编号" prop="record_id" width="120px"></el-table-column>
-                <el-table-column align="center" label="登录账号" prop="user_id" width="120px"></el-table-column>
-                <el-table-column align="center" label="预警时间" prop="record_time" width="180px"></el-table-column>
-                <el-table-column align="center" label="预警地点" prop="record_location"></el-table-column>
-                <el-table-column align="center" label="预警原因" prop="record_reason"></el-table-column>
+                <el-table-column align="center" label="预警编号" prop="recordID" width="120px"></el-table-column>
+                <el-table-column align="center" label="登录账号" prop="userID" width="120px"></el-table-column>
+                <el-table-column align="center" label="预警时间" prop="alarmTime" width="180px"></el-table-column>
+                <el-table-column align="center" label="预警地点" prop="location"></el-table-column>
+                <el-table-column align="center" label="预警原因" prop="alarmReason"></el-table-column>
                 <el-table-column align="center" label="视频编号" prop="video_id" width="120px">
                     <template slot-scope="props">
                         <el-link :underline="false" type="danger">
@@ -44,7 +49,7 @@
                             </el-button>
                         </el-tooltip>
                         <el-tooltip :enterable="false" content="删除" effect="dark" placement="top">
-                            <el-button @click="setRole(scope.row)" icon="el-icon-delete" size="mini" type="danger">删除
+                            <el-button @click="deleteWarning(scope.row)" icon="el-icon-delete" size="mini" type="danger">删除
                             </el-button>
                         </el-tooltip>
                     </template>
@@ -60,9 +65,9 @@
         name: "Warning",
         data() {
             return {
-                warningForm: {
-                    user_name: '',
-                    selectedDate: ''
+                queryWarningForm: {
+                    user_phone: '',
+                    selectedDate: []
                 },
                 loading: true,
                 warningList: []
@@ -73,11 +78,45 @@
         },
         methods: {
             async getWarningList() {
-
-
+                const {data: res} = await this.$http.post('alarm/view', this.queryWarningForm)
+                if (res.code !== 200) {
+                    return this.$message.error("获取预警记录失败")
+                }
+                this.warningList = res.data
                 this.loading = false
+            },
+            async deleteWarning(row) {
+                const confirmResult = await this.$confirm('确认删除该条预警记录?', '删除预警记录', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    showCancelButton: true,
+                    type: 'warning'
+                }).catch(err => err)
+                if (confirmResult !== 'confirm') {
+                    return this.$message.info('取消删除')
+                }
+                const data = new FormData()
+                data.append("record_id", row.alarmID)
+                const {data: res} = await this.$http.post('alarm/delete', data)
+                if (res.code !== 200) {
+                    return this.$message.error("删除失败")
+                }
+                this.$message.success("成功删除")
+                await this.getWarningList()
+            },
+            async searchWarning() {
+                const data = new FormData()
+                data.append("user_phone", this.queryWarningForm.user_phone)
+                data.append('start', this.queryWarningForm.selectedDate[0])
+                data.append('end', this.queryWarningForm.selectedDate[1])
+                const {data: res} = await this.$http.post('alarm/view', this.queryWarningForm)
+                if (res.code !== 200) {
+                    return this.$message.error("查询失败")
+                }
+                this.warningList = res.data
             }
-        }
+        },
+
     }
 </script>
 

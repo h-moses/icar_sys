@@ -5,35 +5,22 @@
             <el-breadcrumb-item :to="{path:'/adminHome'}">首页</el-breadcrumb-item>
             <el-breadcrumb-item>用户管理</el-breadcrumb-item>
         </el-breadcrumb>
-        <el-card>
-            <el-form :inline="true" :model="userForm" ref="searchUserFormRef">
+        <el-card v-loading="loading">
+            <el-form :inline="true" :model="queryForm" ref="searchUserFormRef">
                 <el-form-item label="登录账号" prop="user_name">
-                    <el-input placeholder="请输入登录账号" v-model="userForm.user_name"></el-input>
+                    <el-input placeholder="请输入登录账号" v-model="queryForm.user_name"></el-input>
                 </el-form-item>
-                <el-form-item label="联系电话" prop="user_id">
-                    <el-input placeholder="请输入联系电话" v-model="userForm.user_id"></el-input>
+                <el-form-item label="联系电话" prop="user_phone">
+                    <el-input placeholder="请输入联系电话" v-model="queryForm.user_phone"></el-input>
                 </el-form-item>
-                <el-form-item label="注册时间" prop="selectedDate">
-                    <el-date-picker placeholder="选择日期" type="date" v-model="userForm.selectedDate"></el-date-picker>
+                <el-form-item label="注册时间" prop="register_time">
+                    <el-date-picker placeholder="选择注册日期" ref="RegisterTimePickerRef" type="date" v-model="queryForm.register_time"></el-date-picker>
                 </el-form-item>
                 <el-form-item>
-                    <el-button icon="el-icon-search" plain size="small" type="primary">查询</el-button>
+                    <el-button @click="searchUser" icon="el-icon-search" plain size="small" type="primary">查询</el-button>
                 </el-form-item>
             </el-form>
-            <el-table :data="this.userList" border stripe v-loading="loading">
-                <!--                <el-table-column type="expand">-->
-                <!--                    <template slot-scope="props">-->
-                <!--                        <el-form inline label-position="left">-->
-                <!--                            <el-form-item label="登录账号">{{props.row.userName}}</el-form-item>-->
-                <!--                            <el-form-item label="联系电话">{{props.row.userPhone}}</el-form-item>-->
-                <!--                            <el-form-item label="注册时间">{{props.row.registerTime}}</el-form-item>-->
-                <!--                            <el-form-item label="最近登录">{{props.row.lastLogin}}</el-form-item>-->
-                <!--                            <el-form-item label="车牌号码">{{props.row.userName}}</el-form-item>-->
-                <!--                            <el-form-item label="预警次数">{{props.row.userName}}</el-form-item>-->
-                <!--                            <el-form-item label="驾车评级">{{props.row.userName}}</el-form-item>-->
-                <!--                        </el-form>-->
-                <!--                    </template>-->
-                <!--                </el-table-column>-->
+            <el-table :data="this.userList" border stripe>
                 <el-table-column align="center" label="序号" type="index" width="100px"></el-table-column>
                 <el-table-column align="center" label="登录账号" prop="userName"></el-table-column>
                 <el-table-column align="center" label="联系电话" prop="userPhone"></el-table-column>
@@ -49,8 +36,12 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="showUserDetails(scope.row)" icon="el-icon-view" size="mini" type="primary"></el-button>
-                        <el-button @click="deleteUserInfo(scope.row)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
+                        <el-tooltip :enterable="false" content="编辑" effect="dark" placement="top">
+                            <el-button @click="showUserDetails(scope.row)" icon="el-icon-view" size="mini" type="primary">编辑</el-button>
+                        </el-tooltip>
+                        <el-tooltip :enterable="false" content="删除" effect="dark" placement="top">
+                            <el-button @click="deleteUserInfo(scope.row)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
+                        </el-tooltip>
                     </template>
                 </el-table-column>
             </el-table>
@@ -64,10 +55,10 @@
         name: "User",
         data() {
             return {
-                userForm: {
+                queryForm: {
                     user_name: '',
-                    user_id: '',
-                    selectedDate: ''
+                    user_phone: '',
+                    register_time: ''
                 },
                 userFormRules: {},
                 userList: [],
@@ -89,8 +80,24 @@
                 console.log(row)
                 await this.$router.push({name: 'Detail', params: {'id': row.user_id}})
             },
-            deleteUserInfo() {
-
+            async deleteUserInfo(row) {
+                const confirmResult = await this.$confirm('确认删除该用户?', '删除用户', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    showCancelButton: true,
+                    type: 'warning'
+                }).catch(err => err)
+                if (confirmResult !== 'confirm') {
+                    return this.$message.info('取消删除用户')
+                }
+                const params = new FormData()
+                params.append('user_id', row.userID)
+                const {data: res} = await this.$http.post('deleteUser', params)
+                if (res.code !== 200) {
+                    return this.$message.error("删除用户信息失败")
+                }
+                this.$message.success("成功删除用户信息")
+                await this.getUserList()
             },
             async getUserList() {
                 const {data: res} = await this.$http.post('userInfo')
@@ -100,7 +107,16 @@
                 }
                 this.userList = res.data.users
                 this.loading = false
-            }
+            },
+            async searchUser() {
+                console.log(this.queryForm)
+                const {data: res} = await this.$http.post('userInfo', this.queryForm)
+                if (res.code !== 200) {
+                    return this.$message.error("查询用户失败")
+                }
+                this.$message.success("查询用户成功")
+                this.userList = res.data.users
+            },
         }
     }
 </script>

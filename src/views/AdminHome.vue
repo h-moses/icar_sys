@@ -1,11 +1,11 @@
 <template>
     <el-container class="admin-home">
-        <el-header :class="this.$store.state.adminHome.topBarFixed === true ? 'topBarWrap':''">
+        <el-header :class="this.topBarFixed === true ? 'topBarWrap':''">
             <div @click="this.changeCollapse" class="left_region">
                 <el-button class="aside-button">
                     <i class="el-icon-menu"></i>
                 </el-button>
-                <span>鹰卫</span>
+                <span>鹰卫数据管理中心</span>
             </div>
             <div class="avatar">
                 <el-popover placement="bottom-start" trigger="hover" width="300">
@@ -33,15 +33,18 @@
             </div>
         </el-header>
         <el-container>
-            <el-aside :width="this.$store.state.adminHome.isCollapsed ? '50px': '180px'">
-                <el-menu :collapse="this.$store.state.adminHome.isCollapsed" :collapse-transition="false" :default-active="activePath"
+            <el-aside :width="this.isCollapsed ? '50px': '180px'">
+                <el-menu :collapse="this.isCollapsed" :collapse-transition="false" :default-active="activePath"
                          active-text-color="#409eff"
-                         background-color="#FFF" router text-color="#000"
+                         background-color="#263445"
+                         router
+                         text-color="#FFF"
                          unique-opened>
                     <el-menu-item :index="id" :key="id" v-for="(item,id) in this.menu_item">
                         <i :class="menu_icons[id]"/>
                         <template slot="title">
                             <span>{{item}}</span>
+                            <span>{{name}}</span>
                         </template>
                     </el-menu-item>
                 </el-menu>
@@ -54,7 +57,6 @@
 </template>
 
 <script>
-    import {mapActions} from "vuex";
 
     export default {
         name: "AdminHome",
@@ -62,43 +64,51 @@
             return {
                 activePath: this.$route.path,
                 menu_icons: {
-                    'user': 'icar_sys icaryonghu',
-                    'warning': 'icar_sys icaryujingjishouxinhoujiankong',
-                    'video': 'icar_sys icarshipin2',
-                    'feedback': 'icar_sys icardrxx66',
-                    'analysis': 'icar_sys icartongjifenxi1'
+                    '/user': 'icar_sys icaryonghu',
+                    '/warning': 'icar_sys icar-yujingyucefenxi',
+                    '/video': 'icar_sys icarshipin2',
+                    '/feedback': 'icar_sys icardrxx66',
+                    '/analysis': 'icar_sys icartongjifenxi1',
+                    '/syslog': 'icar_sys icarrizhi'
                 },
                 menu_item: {
-                    'user': '用户管理',
-                    'warning': '预警管理',
-                    'video': '视频管理',
-                    'feedback': '工单管理',
-                    'analysis': '统计分析'
-                }
+                    '/user': '用户管理',
+                    '/warning': '预警管理',
+                    '/video': '视频管理',
+                    '/feedback': '工单管理',
+                    '/analysis': '统计分析',
+                    '/syslog': '系统日志'
+                },
+                topBarFixed: false,
+                isCollapsed: false
             }
         },
         created() {
         },
         mounted() {
-            // window.addEventListener('scroll',this.watchScroll)
+            window.addEventListener('scroll', this.watchScroll)
             this.activePath = this.$route.path
         },
         methods: {
             watchScroll() {
                 var scrollTop = window.pageYOffset | document.documentElement.scrollTop | document.body.scrollTop
                 if (scrollTop > 10) {
-                    this.topFixed({fixed: true})
+                    this.topFixed(true)
                 } else {
-                    this.topFixed({fixed: false})
+                    this.topFixed(false)
                 }
             },
             async logout() {
                 await this.$router.push('/')
             },
-            ...mapActions([
-                'topFixed',
-                'changeCollapse'
-            ]),
+            topFixed(fixed) {
+                if (this.topBarFixed !== fixed) {
+                    this.topBarFixed = fixed
+                }
+            },
+            changeCollapse() {
+                this.isCollapsed = !this.isCollapsed
+            }
         }
     }
 </script>
@@ -121,8 +131,8 @@
         padding-left: 0;
         align-items: center;
         font-size: 20px;
-        color: #52BCFC;
-        background-color: #FFFFFF;
+        color: #FFF;
+        background-color: #263445;
 
         > .left_region {
             height: 100%;
@@ -132,7 +142,7 @@
             .aside-button {
                 height: 100%;
                 width: 50px;
-                background-color: #9ED9FD;
+                background-color: #686A6C;
                 opacity: 0.9;
                 border: 0;
                 border-radius: 0;
@@ -151,7 +161,7 @@
     }
 
     .el-aside {
-        background-color: #FFFFFF;
+        background-color: #263445;
 
         .el-menu {
             margin-left: 0;

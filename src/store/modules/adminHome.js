@@ -1,6 +1,4 @@
 const state = () => ({
-    topBarFixed: false,
-    isCollapsed: false,
 })
 
 const getters = {}

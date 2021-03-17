@@ -7,9 +7,9 @@ import Warning from "../components/warning/Warning";
 import Feedback from "../components/feedback/Feedback";
 import Analysis from "../components/analysis/Analysis";
 import Detail from "../components/user/Detail";
-import UserHome from "../views/UserHome";
 import Reply from "../components/feedback/Reply";
 import AdminLogin from "../views/AdminLogin";
+import SysLog from "../components/syslog/SysLog";
 
 Vue.use(VueRouter)
 
@@ -18,11 +18,6 @@ const routes = [
         path: '/',
         name: 'AdminLogin',
         component: AdminLogin
-    },
-    {
-        path: '/userHome',
-        name: 'UserHome',
-        component: UserHome
     },
     {
         path: '/adminHome',
@@ -55,7 +50,7 @@ const routes = [
                 component: Feedback
             },
             {
-                path: '/reply',
+                path: '/reply/:feedback_id',
                 name: 'Reply',
                 component: Reply
             },
@@ -63,6 +58,11 @@ const routes = [
                 path: '/analysis',
                 name: 'Analysis',
                 component: Analysis
+            },
+            {
+                path: '/syslog',
+                name: SysLog,
+                component: SysLog
             }
         ]
     }

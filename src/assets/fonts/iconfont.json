@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "9432375",
+      "name": "03-预警预测分析",
+      "font_class": "-yujingyucefenxi",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "10056816",
+      "name": "日志",
+      "font_class": "rizhi",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
       "icon_id": "17770850",
       "name": "用户",
       "font_class": "yonghu",
@@ -18,13 +32,6 @@
       "font_class": "drxx66",
       "unicode": "e702",
       "unicode_decimal": 59138
-    },
-    {
-      "icon_id": "3040389",
-      "name": "预警及授信后监控",
-      "font_class": "yujingjishouxinhoujiankong",
-      "unicode": "e6dc",
-      "unicode_decimal": 59100
     },
     {
       "icon_id": "17541046",

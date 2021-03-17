@@ -5,7 +5,7 @@
             <el-breadcrumb-item :to="{path:'/adminHome'}">首页</el-breadcrumb-item>
             <el-breadcrumb-item>视频管理</el-breadcrumb-item>
         </el-breadcrumb>
-        <el-card>
+        <el-card v-loading="loading">
             <el-form :inline="true" :model="videoForm" ref="searchUserFormRef">
                 <el-form-item label="视频编号" prop="video_id">
                     <el-input placeholder="请输入账号ID" v-model="videoForm.video_id"></el-input>
@@ -15,9 +15,14 @@
                 </el-form-item>
                 <el-form-item label="拍摄时间" prop="selectedDate">
                     <el-date-picker
+                            end-placeholder="结束日期"
+                            format="yyyy 年 MM 月 dd 日"
                             placeholder="选择日期"
-                            type="date"
-                            v-model="videoForm.selectedDate">
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            type="daterange"
+                            v-model="videoForm.selectedDate"
+                            value-format="yyyy-MM-dd">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item>
@@ -30,22 +35,24 @@
                 <el-table-column align="center" label="登录账号" prop="user_id"></el-table-column>
                 <el-table-column align="center" label="拍摄时间" prop="video_time"></el-table-column>
                 <el-table-column align="center" label="记录时长" prop="video_duration"></el-table-column>
-                <el-table-column align="center" label="操作">
+                <el-table-column align="center" label="操作" width="300px">
                     <template slot-scope="scope">
                         <el-tooltip :enterable="false" content="预览" effect="dark" placement="top">
-                            <el-button @click="showEditDialog(scope.row.id)" icon="el-icon-view" size="mini"
-                                       type="primary"></el-button>
+                            <el-button @click="scanVideo(scope.row.id)" icon="el-icon-view" size="mini"
+                                       type="primary">预览
+                            </el-button>
                         </el-tooltip>
                         <el-tooltip :enterable="false" content="下载" effect="dark" placement="top">
-                            <el-button @click="deleteUserById(scope.row.id)" icon="el-icon-download" size="mini"
-                                       type="danger"></el-button>
+                            <el-button @click="downloadVideo(scope.row.id)" icon="el-icon-download" size="mini"
+                                       type="warning">下载
+                            </el-button>
                         </el-tooltip>
                     </template>
                 </el-table-column>
             </el-table>
-            <el-pagination :current-page="5" :page-size="5" :page-sizes="[1,2,5,10]"
-                           :total="20" @current-change="handleCurrentChange" @size-change="handleSizeChange"
-                           background layout="total,sizes,prev,pager,next,jumper"></el-pagination>
+            <!--            <el-pagination :current-page="5" :page-size="5" :page-sizes="[1,2,5,10]"-->
+            <!--                           :total="20" @current-change="handleCurrentChange" @size-change="handleSizeChange"-->
+            <!--                           background layout="total,sizes,prev,pager,next,jumper"></el-pagination>-->
         </el-card>
     </div>
 </template>
@@ -59,7 +66,18 @@
                     video_id: '',
                     user_name: '',
                     selectedDate: ''
-                }
+                },
+                loading: true,
+                videoList: []
+            }
+        },
+        created() {
+            this.getVideoList()
+        },
+        methods: {
+            async getVideoList() {
+
+                this.loading = false
             }
         }
     }
