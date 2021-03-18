@@ -40,9 +40,11 @@
                 <!--                    </template>-->
                 <!--                </el-table-column>-->
                 <el-table-column align="center" label="序号" type="index" width="100px"></el-table-column>
+                <el-table-column align="center" label="日志编号" prop="userName"></el-table-column>
                 <el-table-column align="center" label="日志时间" prop="userName"></el-table-column>
-                <el-table-column align="center" label="日志组件" prop="userPhone"></el-table-column>
+                <el-table-column align="center" label="组件实例" prop="userPhone"></el-table-column>
                 <el-table-column align="center" label="日志描述" prop="registerTime"></el-table-column>
+                <el-table-column align="center" label="错误定位" prop="registerTime"></el-table-column>
                 <el-table-column align="center" label="日志类别" prop="userRating">
                     <template slot-scope="scope">
                         <el-tag type="success" v-if="scope.row.userRating === 'A'">{{scope.row.userRating}}</el-tag>
@@ -54,12 +56,8 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                        <el-tooltip :enterable="false" content="下载" effect="dark" placement="top">
-                            <el-button @click="showUserDetails(scope.row)" icon="el-icon-view" size="mini" type="primary">下载</el-button>
-                        </el-tooltip>
-                        <el-tooltip :enterable="false" content="删除" effect="dark" placement="top">
-                            <el-button @click="deleteUserInfo(scope.row)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
-                        </el-tooltip>
+                        <el-button @click="showUserDetails(scope.row)" icon="el-icon-view" size="mini" type="primary">下载</el-button>
+                        <el-button @click="deleteUserInfo(scope.row)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

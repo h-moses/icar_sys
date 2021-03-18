@@ -37,16 +37,8 @@
                 <el-table-column align="center" label="记录时长" prop="video_duration"></el-table-column>
                 <el-table-column align="center" label="操作" width="300px">
                     <template slot-scope="scope">
-                        <el-tooltip :enterable="false" content="预览" effect="dark" placement="top">
-                            <el-button @click="scanVideo(scope.row.id)" icon="el-icon-view" size="mini"
-                                       type="primary">预览
-                            </el-button>
-                        </el-tooltip>
-                        <el-tooltip :enterable="false" content="下载" effect="dark" placement="top">
-                            <el-button @click="downloadVideo(scope.row.id)" icon="el-icon-download" size="mini"
-                                       type="warning">下载
-                            </el-button>
-                        </el-tooltip>
+                        <el-button @click="scanVideo(scope.row.id)" icon="el-icon-view" size="mini" type="primary">预览</el-button>
+                        <el-button @click="downloadVideo(scope.row.id)" icon="el-icon-download" size="mini" type="warning">下载</el-button>
                     </template>
                 </el-table-column>
             </el-table>

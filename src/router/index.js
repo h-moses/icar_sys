@@ -10,6 +10,7 @@ import Detail from "../components/user/Detail";
 import Reply from "../components/feedback/Reply";
 import AdminLogin from "../views/AdminLogin";
 import SysLog from "../components/syslog/SysLog";
+import BigData from "../components/analysis/BigData";
 
 Vue.use(VueRouter)
 
@@ -63,6 +64,11 @@ const routes = [
                 path: '/syslog',
                 name: SysLog,
                 component: SysLog
+            },
+            {
+                path: '/bigdata',
+                name: BigData,
+                component: BigData
             }
         ]
     }

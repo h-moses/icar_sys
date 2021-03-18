@@ -5,7 +5,7 @@
                 <el-button class="aside-button">
                     <i class="el-icon-menu"></i>
                 </el-button>
-                <span>鹰卫数据管理中心</span>
+                <span>驭鹰数据管理中心</span>
             </div>
             <div class="avatar">
                 <el-popover placement="bottom-start" trigger="hover" width="300">

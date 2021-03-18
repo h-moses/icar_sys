@@ -36,12 +36,8 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                        <el-tooltip :enterable="false" content="编辑" effect="dark" placement="top">
-                            <el-button @click="showUserDetails(scope.row)" icon="el-icon-view" size="mini" type="primary">编辑</el-button>
-                        </el-tooltip>
-                        <el-tooltip :enterable="false" content="删除" effect="dark" placement="top">
-                            <el-button @click="deleteUserInfo(scope.row)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
-                        </el-tooltip>
+                        <el-button @click="showUserDetails(scope.row)" icon="el-icon-view" size="mini" type="primary">编辑</el-button>
+                        <el-button @click="deleteUserInfo(scope.row)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

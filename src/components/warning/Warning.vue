@@ -43,15 +43,8 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                        <el-tooltip :enterable="false" content="评定" effect="dark" placement="top">
-                            <el-button @click="deleteUserById(scope.row.id)" icon="el-icon-edit" size="mini"
-                                       type="warning">评定
-                            </el-button>
-                        </el-tooltip>
-                        <el-tooltip :enterable="false" content="删除" effect="dark" placement="top">
-                            <el-button @click="deleteWarning(scope.row)" icon="el-icon-delete" size="mini" type="danger">删除
-                            </el-button>
-                        </el-tooltip>
+                        <el-button @click="deleteUserById(scope.row.id)" icon="el-icon-edit" size="mini" type="warning">评定</el-button>
+                        <el-button @click="deleteWarning(scope.row)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
