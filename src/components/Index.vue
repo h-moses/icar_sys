@@ -1,13 +1,15 @@
 <template>
-    <div class="big-data">
-        <div id="main"></div>
+    <div class="index">
+        <el-card>
+
+        </el-card>
     </div>
 </template>
 
 <script>
     import * as echarts from 'echarts'
     export default {
-        name: "BigData",
+        name: "Index",
         created() {
           this.initChart()
         },
@@ -26,7 +28,7 @@
 </script>
 
 <style lang="less" scoped>
-.big-data {
+.index {
     width: 100%;
     height: 100%;
 }
