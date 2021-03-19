@@ -161,6 +161,10 @@
 </script>
 
 <style lang="less" scoped>
+    .reply {
+        padding: 20px;
+    }
+
     .el-card {
         margin-top: 15px;
         height: 100%;

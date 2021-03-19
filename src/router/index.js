@@ -23,12 +23,12 @@ const routes = [
     {
         path: '/adminHome',
         name: 'AdminHome',
-        redirect:'/index',
+        redirect: '/index',
         component: AdminHome,
         children: [
             {
                 path: '/index',
-                name: Index,
+                name: 'Index',
                 component: Index
             },
             {
@@ -68,9 +68,9 @@ const routes = [
             },
             {
                 path: '/syslog',
-                name: SysLog,
+                name: 'SysLog',
                 component: SysLog
-            },
+            }
         ]
     }
 ]

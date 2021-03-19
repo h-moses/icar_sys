@@ -114,6 +114,10 @@
 </script>
 
 <style lang="less" scoped>
+    .warning {
+        padding: 20px;
+    }
+
     .el-card {
         margin-top: 15px;
         height: 100%;
@@ -138,7 +142,7 @@
         height: 32px;
         border-radius: 0;
 
-        /deep/ .el-range__icon, /deep/ .el-range-input,/deep/ .el-range__close-icon {
+        /deep/ .el-range__icon, /deep/ .el-range-input, /deep/ .el-range__close-icon {
             height: 30px;
             margin-bottom: 1px;
             font-size: 12px;

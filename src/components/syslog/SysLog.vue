@@ -17,7 +17,7 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="日志类型" prop="logType">
-                    <el-select placeholder="请选择日志类型" v-model="queryLogForm.logType" clearable>
+                    <el-select clearable placeholder="请选择日志类型" v-model="queryLogForm.logType">
                         <el-option :key="item.value" :label="item.label" :value="item.value" v-for="item in this.logTypes"></el-option>
                     </el-select>
                 </el-form-item>
@@ -86,18 +86,30 @@
                     }
                 ],
                 queryLogFormRules: {},
-                logList: []
+                logList: [],
+                loading: false
             }
+        },
+
+        created() {
+            this.getLogList()
         },
         methods: {
             async searchLog() {
 
+            },
+            async getLogList() {
+                this.loading = false
             }
         }
     }
 </script>
 
 <style lang="less" scoped>
+    .syslog {
+        padding: 20px;
+    }
+
     .el-card {
         margin-top: 15px;
         height: 100%;

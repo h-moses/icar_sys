@@ -7,6 +7,7 @@ import './assets/css/global.css'
 import './assets/fonts/iconfont.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import {Message, MessageBox} from "element-ui";
+import * as echarts from 'echarts'
 
 axios.defaults.baseURL = 'https://5f5533f7-edc6-432d-90c4-0a4d8dcccf25.mock.pstmn.io/'
 Object.defineProperty(Vue.prototype, '$http', {
@@ -17,6 +18,9 @@ Object.defineProperty(Vue.prototype, '$confirm', {
 })
 Object.defineProperty(Vue.prototype, '$message', {
     value: Message
+})
+Object.defineProperty(Vue.prototype, '$echarts', {
+    value: echarts
 })
 Vue.config.errorHandler = function (err, vm, info) {
     if (vm) {

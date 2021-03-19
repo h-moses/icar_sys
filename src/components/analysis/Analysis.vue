@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="analysis">
 
     </div>
 </template>
@@ -11,5 +11,7 @@
 </script>
 
 <style scoped>
-
+    .analysis {
+        padding: 20px;
+    }
 </style>

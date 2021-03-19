@@ -29,7 +29,7 @@
                     <el-button icon="el-icon-search" plain size="small" type="primary">查询</el-button>
                 </el-form-item>
             </el-form>
-            <el-table :data="this.$store.state.video.videoList" border stripe>
+            <el-table :data="this.videoList" border stripe>
                 <el-table-column align="center" label="序号" type="index" width="100px"></el-table-column>
                 <el-table-column align="center" label="视频编号" prop="video_id"></el-table-column>
                 <el-table-column align="center" label="登录账号" prop="user_id"></el-table-column>
@@ -76,6 +76,10 @@
 </script>
 
 <style lang="less" scoped>
+    .video {
+        padding: 20px;
+    }
+
     .el-card {
         margin-top: 15px;
         height: 100%;
@@ -89,7 +93,7 @@
         margin-left: 20px;
     }
 
-     .el-input /deep/ .el-input__inner {
+    .el-input /deep/ .el-input__inner {
         height: 32px;
         font-size: 12px;
         border-radius: 0;
@@ -101,7 +105,7 @@
         height: 32px;
         border-radius: 0;
 
-        /deep/ .el-range__icon, /deep/ .el-range-input,/deep/ .el-range__close-icon {
+        /deep/ .el-range__icon, /deep/ .el-range-input, /deep/ .el-range__close-icon {
             height: 30px;
             margin-bottom: 1px;
             font-size: 12px;

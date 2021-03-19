@@ -118,6 +118,10 @@
 </script>
 
 <style lang="less" scoped>
+    .user {
+        padding: 20px;
+    }
+
     .el-card {
         margin-top: 15px;
         height: 100%;

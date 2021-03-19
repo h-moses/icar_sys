@@ -85,6 +85,10 @@
 </script>
 
 <style lang="less" scoped>
+    .detail {
+        padding: 20px;
+    }
+
     .el-card {
         margin-top: 15px;
         height: 100%;

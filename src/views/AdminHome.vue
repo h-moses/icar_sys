@@ -83,6 +83,7 @@
             }
         },
         created() {
+
         },
         mounted() {
             window.addEventListener('scroll', this.watchScroll)
@@ -167,7 +168,7 @@
             border-right: none;
 
             .el-menu-item {
-                padding: 0;
+                padding-left: 0;
 
                 span {
                     margin-left: 20px;
@@ -176,8 +177,9 @@
         }
     }
 
-    .el-main {
+    /deep/ .el-main {
         background-color: #eaedf1;
+        padding: 0;
     }
 
     .el-popover {
