@@ -23,33 +23,43 @@
                 <el-row>
                     <div class="left">
                         <el-col>
-                            <dv-border-box-10>dv-border-box-10</dv-border-box-10>
+                            <dv-decoration-11 class="title-degree">风险等级</dv-decoration-11>
+                            <warning-degree-radar-chart class="degree-radar" style="width: 80%"></warning-degree-radar-chart>
+                            <dv-decoration-11 class="title-user-number">用户走势图</dv-decoration-11>
+                            <warning-number-line-chart class="line-user-number" style="width: 95%;height: 230px"></warning-number-line-chart>
                         </el-col>
                     </div>
                     <div class="center">
-                        <el-row>
-                            <dv-border-box-8 class="border-text">
-                                <div class="inner-text inner-title">用户总人数</div>
-                                <div class="inner-text inner-content">2000</div>
-                            </dv-border-box-8>
-                            <dv-border-box-8 class="border-text">
-                                <div class="inner-text inner-title">当天预警数</div>
-                                <div class="inner-text inner-content">2000</div>
-                            </dv-border-box-8>
-                            <dv-border-box-8 class="border-text">
-                                <div class="inner-text inner-title">预警总数</div>
-                                <div class="inner-text inner-content">2000</div>
-                            </dv-border-box-8>
-                        </el-row>
+                        <el-col>
+                            <el-row>
+                                <dv-border-box-8 class="border-text">
+                                    <div class="inner-text inner-title">用户总人数</div>
+                                    <div class="inner-text inner-content">2000</div>
+                                </dv-border-box-8>
+                                <dv-border-box-8 class="border-text">
+                                    <div class="inner-text inner-title">当天预警数</div>
+                                    <div class="inner-text inner-content">2000</div>
+                                </dv-border-box-8>
+                                <dv-border-box-8 class="border-text">
+                                    <div class="inner-text inner-title">预警总数</div>
+                                    <div class="inner-text inner-content">2000</div>
+                                </dv-border-box-8>
+                            </el-row>
+                            <div style="width: 100%;height: 200px">
+                                <china-map class="china-map" style="z-index: -1"></china-map>
+                            </div>
+                            <dv-decoration-11 class="title-number">预警走势图</dv-decoration-11>
+                            <warning-number-line-chart class="warning-line" style="height: 230px"></warning-number-line-chart>
+                        </el-col>
                     </div>
                     <div class="right">
                         <el-col>
                             <dv-decoration-11 class="title-board">实时预警事件</dv-decoration-11>
                             <dv-scroll-board :config="warning_board" class="warning-board"/>
                             <dv-decoration-11 class="title-rank">预警数城市排行</dv-decoration-11>
-                            <dv-border-box-7 class="border-rank" style="box-shadow: #096798 0 0 40px inset; border: 1px solid #096798">
+<!--                            <dv-border-box-7 class="border-rank" style="box-shadow: #096798 0 0 40px inset; border: 1px solid #096798">-->
                                 <dv-capsule-chart :config="config" class="warning-rank"/>
-                            </dv-border-box-7>
+<!--                            </dv-border-box-7>-->
                         </el-col>
                     </div>
                 </el-row>
@@ -60,12 +70,15 @@
 
 <script>
    import Vue from 'vue'
-
    import dataV from '@jiaminghi/data-view'
+   import WarningDegreeRadarChart from "./echarts/WarningDegreeRadarChart";
+   import WarningNumberLineChart from "./echarts/WarningNumberLineChart";
+   import ChinaMap from "./echarts/ChinaMap";
 
    Vue.use(dataV)
     export default {
         name: "Index",
+        components: {ChinaMap, WarningNumberLineChart, WarningDegreeRadarChart},
         data() {
             return {
                 loading: true,
@@ -93,7 +106,7 @@
                         },
                     ],
                     // colors: ['#e062ae', '#fb7293', '#e690d1', '#32c5e9', '#96bfff'],
-                    unit: '单位',
+                    unit: '起',
                     showValue: true
                 },
                 warning_board: {
@@ -114,7 +127,8 @@
                     columnWidth: [100],
                     headerBGC: 'transparent',
                     oddRowBGC: 'transparent',
-                    evenRowBGC: '#2B3043'
+                    evenRowBGC: '#2B3043',
+                    rowNum: 6
                 }
             }
         },
@@ -195,8 +209,33 @@
         .main {
             padding-top: 10px;
 
-            /deep/ .left {
-                width: 20%;
+            .left {
+                position: absolute;
+                width: 30%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                /deep/ .title-degree {
+                    width: 200px;
+                    height: 50px;
+                    font-size: 17px;
+                    color: white;
+                    margin: 0 0 20px 0;
+                }
+
+                /deep/ .degree-radar {
+                    margin: 0;
+                }
+
+                /deep/ .title-user-number {
+                    width: 200px;
+                    height: 50px;
+                    font-size: 17px;
+                    color: white;
+                    margin: 20px 0 0 0
+                }
+
             }
 
             .center {
@@ -206,7 +245,7 @@
                 height: 100%;
                 display: flex;
                 justify-content: center;
-                align-items: end;
+                align-items: flex-start;
 
                 /deep/ .border-text {
                     display: inline-flex;
@@ -232,7 +271,15 @@
                 }
 
                 /deep/ .border-text:not(:first-child) {
-                    margin-left: 30px;
+                    margin-left: 20px;
+                }
+
+                /deep/ .title-number {
+                    width: 200px;
+                    height: 50px;
+                    font-size: 17px;
+                    color: white;
+                    margin: 20px 0 0 30px
                 }
             }
 
@@ -253,15 +300,7 @@
 
                 /deep/ .warning-board {
                     width: 97%;
-                    height: 220px;
-
-                    /*.header {*/
-                    /*   border: 1px #00C2FF solid;*/
-                    /*}*/
-
-                    .rows {
-
-                    }
+                    height: 250px;
                 }
 
                 /deep/ .title-rank {
@@ -269,18 +308,12 @@
                     height: 50px;
                     font-size: 17px;
                     color: white;
-                    margin: 20px 0;
-                }
-
-                /deep/ .dv-border-box-7.border-rank {
-                    width: 97%;
-                    height: 210px;
+                    margin: 20px 0 0 0;
                 }
 
                 /deep/ .warning-rank {
-                    padding: 10px;
                     width: 95%;
-                    height: 200px;
+                    height: 220px;
                 }
 
             }

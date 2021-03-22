@@ -11,10 +11,12 @@
     "@jiaminghi/data-view": "^2.10.0",
     "axios": "^0.21.1",
     "core-js": "^3.9.0",
-    "echarts": "^5.0.2",
+    "echarts": "^4.9.0",
+    "echarts-china-cities-js": "^0.1.1",
     "element-ui": "^2.4.5",
     "less": "^4.1.1",
     "less-loader": "^5.0.0",
+    "lodash": "^4.17.21",
     "v-viewer": "^1.5.1",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0"

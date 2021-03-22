@@ -86,18 +86,18 @@
 
         },
         mounted() {
-            window.addEventListener('scroll', this.watchScroll)
+            // window.addEventListener('scroll', this.watchScroll)
             this.activePath = this.$route.path
         },
         methods: {
-            watchScroll() {
-                var scrollTop = window.pageYOffset | document.documentElement.scrollTop | document.body.scrollTop
-                if (scrollTop > 10) {
-                    this.topFixed(true)
-                } else {
-                    this.topFixed(false)
-                }
-            },
+            // watchScroll() {
+            //     var scrollTop = window.pageYOffset | document.documentElement.scrollTop | document.body.scrollTop
+            //     if (scrollTop > 10) {
+            //         this.topFixed(true)
+            //     } else {
+            //         this.topFixed(false)
+            //     }
+            // },
             async logout() {
                 await this.$router.push('/')
             },
