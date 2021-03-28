@@ -1,5 +1,8 @@
 <template>
     <div class="login_container">
+        <div class="title-login">
+            <span>驭 鹰 后 台 管 理 系 统</span>
+        </div>
         <div class="login_box">
             <!--头像区域-->
             <div class="avatar_box">
@@ -63,6 +66,16 @@
     .login_container {
         background-color: #5FA3CC;
         height: 100%;
+
+        > .title-login {
+            padding-top: 40px;
+            display: flex;
+            justify-content: center;
+            font-size: 50px;
+            /*background-image: linear-gradient(135deg, white, black);*/
+            /*-webkit-background-clip: text;*/
+            color: white;
+        }
     }
 
     .login_box {

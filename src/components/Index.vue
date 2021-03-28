@@ -45,9 +45,6 @@
                                     <div class="inner-text inner-content">2000</div>
                                 </dv-border-box-8>
                             </el-row>
-                            <div style="width: 100%;height: 200px">
-                                <china-map class="china-map" style="z-index: -1"></china-map>
-                            </div>
                             <dv-decoration-11 class="title-number">预警走势图</dv-decoration-11>
                             <warning-number-line-chart class="warning-line" style="height: 230px"></warning-number-line-chart>
                         </el-col>
@@ -73,12 +70,11 @@
    import dataV from '@jiaminghi/data-view'
    import WarningDegreeRadarChart from "./echarts/WarningDegreeRadarChart";
    import WarningNumberLineChart from "./echarts/WarningNumberLineChart";
-   import ChinaMap from "./echarts/ChinaMap";
 
    Vue.use(dataV)
     export default {
         name: "Index",
-        components: {ChinaMap, WarningNumberLineChart, WarningDegreeRadarChart},
+        components: { WarningNumberLineChart, WarningDegreeRadarChart},
         data() {
             return {
                 loading: true,
@@ -175,7 +171,8 @@
         position: relative;
         height: 100%;
         display: flex;
-        background-color: #061437;
+        background: #061437 url("../assets/bk_logo.png") no-repeat center;
+        background-size: 30%;
 
         .header {
             /deep/ .header-top {
@@ -279,7 +276,7 @@
                     height: 50px;
                     font-size: 17px;
                     color: white;
-                    margin: 20px 0 0 30px
+                    margin: 220px 0 0 30px
                 }
             }
 
