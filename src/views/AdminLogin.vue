@@ -118,14 +118,13 @@
     }
 
     .btns {
-        display: flex;
-        justify-content: flex-end;
 
         .el-button {
-            width: 100px;
+            width: 410px;
             height: 40px;
             background-color: #849FC4;
-            border: 1px solid #cccccc;
+            border: 0;
+            border-radius: 0;
         }
     }
 </style>
