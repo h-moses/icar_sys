@@ -17,7 +17,7 @@
                     <el-input clearable prefix-icon="icar_sys icarmima" type="password" v-model="loginForm.admin_pwd"></el-input>
                 </el-form-item>
                 <el-form-item class="btns">
-                    <el-button @click="login" type="primary">登录</el-button>
+                    <el-button @click="login" type="primary" :loading="loading">登录<span v-if="loading === true">中</span> </el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -40,18 +40,21 @@
                     admin_pwd: [
                         {required: true, message: '请输入密码', trigger: 'blur'},
                     ]
-                }
+                },
+                loading: false
             }
         },
         methods: {
             login() {
                 this.$refs.loginFormRef.validate(async valid => {
                     if (!valid) return
+                    this.loading = true
                     const data = new FormData()
                     data.append('admin_name',this.loginForm.admin_name)
                     data.append('admin_pwd',this.loginForm.admin_pwd)
                     const {data: res} = await this.$http.post('admin_login', data)
                     if (res.code !== 200) {
+                        this.loading = false
                         return this.$message.error("登录失败")
                     }
                     window.sessionStorage.setItem('token',res.data['token'])
