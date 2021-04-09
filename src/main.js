@@ -9,7 +9,11 @@ import 'element-ui/lib/theme-chalk/index.css'
 import {Message, MessageBox} from "element-ui";
 import echarts from 'echarts'
 
-axios.defaults.baseURL = 'https://5f5533f7-edc6-432d-90c4-0a4d8dcccf25.mock.pstmn.io/'
+axios.defaults.baseURL = 'http://47.93.22.218:8080/'
+axios.interceptors.request.use(config => {
+    config.headers.Authorization = window.sessionStorage.getItem('token')
+    return config
+})
 Object.defineProperty(Vue.prototype, '$http', {
     value: axios
 })

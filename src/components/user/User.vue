@@ -22,10 +22,11 @@
             </el-form>
             <el-table :data="this.userList" border stripe>
                 <el-table-column align="center" label="序号" type="index" width="100px"></el-table-column>
-                <el-table-column align="center" label="登录账号" prop="userName"></el-table-column>
+                <el-table-column align="center" label="用户名称" prop="userName"></el-table-column>
                 <el-table-column align="center" label="联系电话" prop="userPhone"></el-table-column>
                 <el-table-column align="center" label="注册时间" prop="registerTime"></el-table-column>
-                <el-table-column align="center" label="驾驶评级" prop="userRating">
+                <el-table-column align="center" label="最近登录" prop="lastLogin"></el-table-column>
+                <el-table-column align="center" label="驾驶评级" prop="userRating" :filters="filterDegree" :filter-method="handleFilter">
                     <template slot-scope="scope">
                         <el-tag type="success" v-if="scope.row.userRating === 'A'">{{scope.row.userRating}}</el-tag>
                         <el-tag v-else-if="scope.row.userRating === 'B'">{{scope.row.userRating}}</el-tag>
@@ -36,8 +37,8 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="showUserDetails(scope.row)" icon="el-icon-view" size="mini" type="primary">编辑</el-button>
-                        <el-button @click="deleteUserInfo(scope.row)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
+                        <el-button @click="showUserDetails(scope.row.userID)" icon="el-icon-view" size="mini" type="primary">查看</el-button>
+                        <el-button @click="deleteUserInfo(scope.row.userID)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -52,14 +53,32 @@
         data() {
             return {
                 queryForm: {
-                    user_name: '',
-                    user_phone: '',
-                    register_time: ''
+                    "user_name": "",
+                    "user_phone": "",
+                    "register_time": "",
                 },
                 userFormRules: {},
                 userList: [],
                 // total:''
-                loading: true
+                loading: true,
+                filterDegree: [
+                    {
+                        text: 'A',
+                        value: 'A'
+                    },
+                    {
+                        text: 'B',
+                        value: 'B'
+                    },
+                    {
+                        text: 'C',
+                        value: 'C'
+                    },
+                    {
+                        text: 'D',
+                        value: 'D'
+                    }
+                ]
             }
         },
         created() {
@@ -76,7 +95,7 @@
                 console.log(row)
                 await this.$router.push({name: 'Detail', params: {'id': row.user_id}})
             },
-            async deleteUserInfo(row) {
+            async deleteUserInfo(id) {
                 const confirmResult = await this.$confirm('确认删除该用户?', '删除用户', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -87,17 +106,16 @@
                     return this.$message.info('取消删除用户')
                 }
                 const params = new FormData()
-                params.append('user_id', row.userID)
+                params.append('user_id', id)
                 const {data: res} = await this.$http.post('deleteUser', params)
                 if (res.code !== 200) {
-                    return this.$message.error("删除用户信息失败")
+                    return this.$message.error("删除用户失败")
                 }
-                this.$message.success("成功删除用户信息")
+                this.$message.success("成功删除用户")
                 await this.getUserList()
             },
             async getUserList() {
                 const {data: res} = await this.$http.post('userInfo')
-                console.log(res)
                 if (res.code !== 200) {
                     return this.$message.error("获取用户记录失败")
                 }
@@ -110,9 +128,14 @@
                 if (res.code !== 200) {
                     return this.$message.error("查询用户失败")
                 }
+                console.log("search:" + res.data.users)
                 this.$message.success("查询用户成功")
                 this.userList = res.data.users
             },
+            handleFilter(value,row,column) {
+                const property = column['property']
+                return row[property] === value
+            }
         }
     }
 </script>
@@ -128,6 +151,12 @@
 
         .el-pagination {
             margin-top: 15px;
+        }
+
+        /deep/ .el-icon-arrow-down {
+            width: 20px;
+            height: 18px;
+            box-sizing: border-box;
         }
     }
 

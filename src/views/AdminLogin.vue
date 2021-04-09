@@ -9,7 +9,7 @@
                 <img alt="" src="../assets/logo.png">
             </div>
             <!--登录表单区域-->
-            <el-form :model="loginForm" :rules="loginFormRules" class="login_form" label-width="0px" ref="loginFormRef">
+            <el-form :model="loginForm" :rules="loginFormRules" class="login_form" label-width="0" ref="loginFormRef">
                 <el-form-item prop="admin_name">
                     <el-input clearable prefix-icon="icar_sys icaruser" v-model="loginForm.admin_name"></el-input>
                 </el-form-item>
@@ -36,11 +36,9 @@
                 loginFormRules: {
                     admin_name: [
                         {required: true, message: '请输入登录账号', trigger: 'blur'},
-                        // {min: 3, max: 10, message: '长度在3到10个字符', trigger: 'blur'}
                     ],
                     admin_pwd: [
                         {required: true, message: '请输入密码', trigger: 'blur'},
-                        // {min: 6, max: 15, message: '长度在6到15位', trigger: 'blur'}
                     ]
                 }
             }
@@ -49,10 +47,14 @@
             login() {
                 this.$refs.loginFormRef.validate(async valid => {
                     if (!valid) return
-                    const {data: res} = await this.$http.post('admin_login', this.loginForm)
+                    const data = new FormData()
+                    data.append('admin_name',this.loginForm.admin_name)
+                    data.append('admin_pwd',this.loginForm.admin_pwd)
+                    const {data: res} = await this.$http.post('admin_login', data)
                     if (res.code !== 200) {
                         return this.$message.error("登录失败")
                     }
+                    window.sessionStorage.setItem('token',res.data['token'])
                     this.$message.success("登录成功")
                     await this.$router.push('/adminHome')
                 })
@@ -72,8 +74,6 @@
             display: flex;
             justify-content: center;
             font-size: 50px;
-            /*background-image: linear-gradient(135deg, white, black);*/
-            /*-webkit-background-clip: text;*/
             color: white;
         }
     }
