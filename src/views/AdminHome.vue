@@ -82,6 +82,7 @@
                 },
                 topBarFixed: false,
                 isCollapsed: false,
+                transitionName:''
             }
         },
         created() {
@@ -89,6 +90,15 @@
         },
         mounted() {
             this.activePath = this.$route.path
+        },
+        watch: {
+            '$route' (to,from) {
+                if (to.path === from.path) {
+                    this.transitionName = ''
+                } else {
+                    this.transitionName = 'fade-right'
+                }
+            }
         },
         methods: {
             async logout() {
@@ -135,6 +145,9 @@
                 border: 0;
                 border-radius: 0;
                 color: #FFFFFF;
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
 
             .aside-button:active {
@@ -156,10 +169,22 @@
             border-right: none;
 
             .el-menu-item {
-                padding-left: 0;
+                width: 50px;
+                box-sizing: border-box;
+                margin: 0;
+                padding-left: 18px !important;
+                display: flex;
+                align-items: center;
 
                 span {
                     margin-left: 20px;
+                }
+
+                /deep/ .el-tooltip {
+                    padding: 0 !important;
+                    width: 50px !important;
+                    display: flex !important;
+                    justify-content: center;
                 }
             }
         }
@@ -186,4 +211,23 @@
         border-radius: 0;
         width: 100%;
     }
+
+    .fade-left-enter-active,.fade-right-enter-active{
+        transition: all .8s ease
+    }
+
+    .fade-left-leave-active, .fade-right-leave-active {
+        transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0)
+    }
+
+    .fade-left-leave-to, .fade-right-enter{
+        transform: translate3d(-50%, 0, 0);
+        opacity: 0
+    }
+
+    .fade-left-enter, .fade-right-leave-to {
+        transform: translate3d(50%, 0, 0);
+        opacity: 0
+    }
+
 </style>

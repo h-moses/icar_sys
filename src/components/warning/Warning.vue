@@ -5,7 +5,7 @@
             <el-breadcrumb-item :to="{path:'/adminHome'}">首页</el-breadcrumb-item>
             <el-breadcrumb-item>预警管理</el-breadcrumb-item>
         </el-breadcrumb>
-        <el-card v-loading="loading">
+        <el-card>
             <el-form :inline="true" :model="queryWarningForm" ref="searchWarningFormRef">
                 <el-form-item label="登录账号" prop="user_name">
                     <el-input placeholder="请输入登录账号" v-model="queryWarningForm.user_name"></el-input>
