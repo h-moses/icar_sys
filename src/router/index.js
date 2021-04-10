@@ -37,7 +37,7 @@ const routes = [
                 component: User,
             },
             {
-                path: '/detail',
+                path: '/detail/:user_phone',
                 name: 'Detail',
                 component: Detail
             },

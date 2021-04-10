@@ -8,13 +8,13 @@
         <el-card v-loading="loading">
             <el-form :inline="true" :model="queryForm" ref="searchUserFormRef">
                 <el-form-item label="登录账号" prop="user_name">
-                    <el-input placeholder="请输入登录账号" v-model="queryForm.user_name"></el-input>
+                    <el-input placeholder="请输入登录账号" v-model="queryForm.user_name" @keyup.enter.native="searchUser"></el-input>
                 </el-form-item>
                 <el-form-item label="联系电话" prop="user_phone">
-                    <el-input placeholder="请输入联系电话" v-model="queryForm.user_phone"></el-input>
+                    <el-input placeholder="请输入联系电话" v-model="queryForm.user_phone" @keyup.enter.native="searchUser"></el-input>
                 </el-form-item>
                 <el-form-item label="注册时间" prop="register_time">
-                    <el-date-picker placeholder="选择注册日期" ref="RegisterTimePickerRef" type="date" v-model="queryForm.register_time"></el-date-picker>
+                    <el-date-picker placeholder="选择注册日期" ref="RegisterTimePickerRef" type="date" v-model="queryForm.register_time" value-format="yyyy-MM-dd"></el-date-picker>
                 </el-form-item>
                 <el-form-item>
                     <el-button @click="searchUser" icon="el-icon-search" plain size="small" type="primary">查询</el-button>
@@ -37,8 +37,8 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="showUserDetails(scope.row.userID)" icon="el-icon-view" size="mini" type="primary">查看</el-button>
-                        <el-button @click="deleteUserInfo(scope.row.userID)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
+                        <el-button @click="showUserDetails(scope.row.userPhone)" icon="el-icon-view" size="mini" type="primary">查看</el-button>
+                        <el-button @click="deleteUserInfo(scope.row.userPhone)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -91,11 +91,10 @@
             // handleCurrentChange() {
             //
             // },
-            async showUserDetails(row) {
-                console.log(row)
-                await this.$router.push({name: 'Detail', params: {'id': row.user_id}})
+            async showUserDetails(user_phone) {
+                await this.$router.push({name: 'Detail', params: {'user_phone':user_phone}})
             },
-            async deleteUserInfo(id) {
+            async deleteUserInfo(user_phone) {
                 const confirmResult = await this.$confirm('确认删除该用户?', '删除用户', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -105,9 +104,9 @@
                 if (confirmResult !== 'confirm') {
                     return this.$message.info('取消删除用户')
                 }
-                const params = new FormData()
-                params.append('user_id', id)
-                const {data: res} = await this.$http.post('deleteUser', params)
+                // const params = new FormData()
+                // params.append('user_id', user_phone)
+                const {data: res} = await this.$http.post('deleteUser', user_phone)
                 if (res.code !== 200) {
                     return this.$message.error("删除用户失败")
                 }
@@ -123,12 +122,22 @@
                 this.loading = false
             },
             async searchUser() {
-                console.log(this.queryForm)
+                const formData = new FormData()
+                if (this.queryForm.user_phone !== "") {
+                    formData.append('user_phone',this.queryForm.user_phone)
+                }
+                // if (this.queryForm.register_time !== "") {
+                //     console.log(this.queryForm.register_time)
+                //     formData.append('register_time',this.queryForm.register_time)
+                // }
+                // if (this.queryForm.user_name !== "") {
+                //     formData.append('user_name',this.queryForm.user_name)
+                // }
                 const {data: res} = await this.$http.post('userInfo', this.queryForm)
                 if (res.code !== 200) {
                     return this.$message.error("查询用户失败")
                 }
-                console.log("search:" + res.data.users)
+                console.log(res.data.users)
                 this.$message.success("查询用户成功")
                 this.userList = res.data.users
             },

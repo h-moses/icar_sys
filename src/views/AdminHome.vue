@@ -49,7 +49,9 @@
                 </el-menu>
             </el-aside>
             <el-main>
-                <router-view/>
+                <transition mode="out-in" :name="transitionName">
+                    <router-view/>
+                </transition>
             </el-main>
         </el-container>
     </el-container>
@@ -79,32 +81,18 @@
                     '/syslog': '系统日志'
                 },
                 topBarFixed: false,
-                isCollapsed: false
+                isCollapsed: false,
             }
         },
         created() {
 
         },
         mounted() {
-            // window.addEventListener('scroll', this.watchScroll)
             this.activePath = this.$route.path
         },
         methods: {
-            // watchScroll() {
-            //     var scrollTop = window.pageYOffset | document.documentElement.scrollTop | document.body.scrollTop
-            //     if (scrollTop > 10) {
-            //         this.topFixed(true)
-            //     } else {
-            //         this.topFixed(false)
-            //     }
-            // },
             async logout() {
                 await this.$router.push('/')
-            },
-            topFixed(fixed) {
-                if (this.topBarFixed !== fixed) {
-                    this.topBarFixed = fixed
-                }
             },
             changeCollapse() {
                 this.isCollapsed = !this.isCollapsed

@@ -8,16 +8,16 @@
             <div class="avatar_box">
                 <img alt="" src="../assets/logo.png">
             </div>
-            <!--登录表单区域-->
+<!--            登录表单区域-->
             <el-form :model="loginForm" :rules="loginFormRules" class="login_form" label-width="0" ref="loginFormRef">
                 <el-form-item prop="admin_name">
                     <el-input clearable prefix-icon="icar_sys icaruser" v-model="loginForm.admin_name"></el-input>
                 </el-form-item>
                 <el-form-item prop="admin_pwd">
-                    <el-input clearable prefix-icon="icar_sys icarmima" type="password" v-model="loginForm.admin_pwd"></el-input>
+                    <el-input clearable prefix-icon="icar_sys icarmima" type="password" v-model="loginForm.admin_pwd" @keyup.enter.native="login"></el-input>
                 </el-form-item>
                 <el-form-item class="btns">
-                    <el-button @click="login" type="primary" :loading="loading">登录<span v-if="loading === true">中</span> </el-button>
+                    <el-button type="primary" :loading="loading" @click="login">登录<span v-if="loading === true">中</span> </el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -49,10 +49,7 @@
                 this.$refs.loginFormRef.validate(async valid => {
                     if (!valid) return
                     this.loading = true
-                    const data = new FormData()
-                    data.append('admin_name',this.loginForm.admin_name)
-                    data.append('admin_pwd',this.loginForm.admin_pwd)
-                    const {data: res} = await this.$http.post('admin_login', data)
+                    const {data: res} = await this.$http.post('admin_login', this.loginForm)
                     if (res.code !== 200) {
                         this.loading = false
                         return this.$message.error("登录失败")
@@ -69,8 +66,8 @@
 
 <style lang="less" scoped>
     .login_container {
-        background-color: #5FA3CC;
         height: 100%;
+        background-image: linear-gradient(135deg, #92fe9d 0%, #00c9ff 100%);
 
         > .title-login {
             padding-top: 40px;
@@ -84,7 +81,7 @@
     .login_box {
         width: 450px;
         height: 300px;
-        background-color: #fff;
+        /*background-color: #fff;*/
         border-radius: 3px;
         position: absolute;
         left: 50%;
@@ -125,7 +122,7 @@
         .el-button {
             width: 410px;
             height: 40px;
-            background-color: #849FC4;
+            background-color: #009efd;
             border: 0;
             border-radius: 0;
         }

@@ -7,11 +7,14 @@ import './assets/css/global.css'
 import './assets/fonts/iconfont.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import {Message, MessageBox} from "element-ui";
+import qs from 'qs'
 import echarts from 'echarts'
 
 axios.defaults.baseURL = 'http://47.93.22.218:8080/'
 axios.interceptors.request.use(config => {
+    config.data = qs.stringify(config.data)
     config.headers.Authorization = window.sessionStorage.getItem('token')
+    config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
     return config
 })
 Object.defineProperty(Vue.prototype, '$http', {
