@@ -169,7 +169,6 @@
             border-right: none;
 
             .el-menu-item {
-                width: 50px;
                 box-sizing: border-box;
                 margin: 0;
                 padding-left: 18px !important;
@@ -185,6 +184,7 @@
                     width: 50px !important;
                     display: flex !important;
                     justify-content: center;
+                    align-items: center;
                 }
             }
         }

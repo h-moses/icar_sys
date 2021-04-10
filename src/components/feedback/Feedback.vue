@@ -6,7 +6,7 @@
             <el-breadcrumb-item>工单管理</el-breadcrumb-item>
         </el-breadcrumb>
 
-        <el-card v-loading="loading">
+        <el-card>
             <el-form :inline="true" :model="feedbackForm" ref="searchUserFormRef">
                 <!--                <el-form-item label="工单编号" prop="feedback_id">-->
                 <!--                    <el-input placeholder="请输入工单编号" v-model="feedbackForm.feedback_id"></el-input>-->
@@ -23,11 +23,11 @@
                     <el-button @click="searchOrder" icon="el-icon-search" plain size="small" type="primary">查询</el-button>
                 </el-form-item>
             </el-form>
-            <el-table :data="this.feedbackList" border stripe>
+            <el-table :data="this.feedbackList" border stripe v-loading="loading">
                 <el-table-column align="center" label="序号" type="index" width="100px"></el-table-column>
                 <el-table-column align="center" label="工单编号" prop="feedbackID"></el-table-column>
-                <el-table-column align="center" label="登录账号" prop="userID"></el-table-column>
-                <el-table-column align="center" label="联系电话" prop="userPhone" width="120px"></el-table-column>
+                <el-table-column align="center" label="登录账号" prop="userName"></el-table-column>
+<!--                <el-table-column align="center" label="联系电话" prop="userPhone" width="120px"></el-table-column>-->
                 <el-table-column align="center" label="工单内容" prop="feedbackContent"></el-table-column>
                 <el-table-column align="center" label="提交时间" prop="feedbackTime"></el-table-column>
                 <el-table-column align="center" label="处理状态" prop="feedbackState" width="100px">
@@ -118,8 +118,8 @@
                 if (res.code !== 200) {
                     return this.$message.error("获取失败")
                 }
-                this.feedbackList = res.data.feedbackRecord
-                console.log(this.feedbackList)
+                this.feedbackList = res.data.feedbackRecord['list']
+                // console.log(this.feedbackList)
                 this.loading = false
             },
             async searchOrder() {

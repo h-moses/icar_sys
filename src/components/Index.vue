@@ -45,6 +45,7 @@
                                     <div class="inner-text inner-content">2000</div>
                                 </dv-border-box-8>
                             </el-row>
+                            <vue-core-video-player class="video-player" @play="player" src="https://car-recognition.oss-cn-beijing.aliyuncs.com/detection.mp4"></vue-core-video-player>
                             <dv-decoration-11 class="title-number">预警走势图</dv-decoration-11>
                             <warning-number-line-chart class="warning-line" style="height: 230px"></warning-number-line-chart>
                         </el-col>
@@ -68,10 +69,12 @@
 <script>
    import Vue from 'vue'
    import dataV from '@jiaminghi/data-view'
-   import WarningDegreeRadarChart from "./echarts/WarningDegreeRadarChart";
-   import WarningNumberLineChart from "./echarts/WarningNumberLineChart";
+   import WarningDegreeRadarChart from "./echarts/WarningDegreeRadarChart"
+   import WarningNumberLineChart from "./echarts/WarningNumberLineChart"
+   import VueCoreVideoPlayer from 'vue-core-video-player'
 
    Vue.use(dataV)
+   Vue.use(VueCoreVideoPlayer)
     export default {
         name: "Index",
         components: { WarningNumberLineChart, WarningDegreeRadarChart},
@@ -101,7 +104,6 @@
                             value: 66
                         },
                     ],
-                    // colors: ['#e062ae', '#fb7293', '#e690d1', '#32c5e9', '#96bfff'],
                     unit: '起',
                     showValue: true
                 },
@@ -124,8 +126,8 @@
                     headerBGC: 'transparent',
                     oddRowBGC: 'transparent',
                     evenRowBGC: '#2B3043',
-                    rowNum: 6
-                }
+                    rowNum: 6,
+                },
             }
         },
         created() {
@@ -247,7 +249,7 @@
                 /deep/ .border-text {
                     display: inline-flex;
                     width: 200px;
-                    height: 120px;
+                    height: 100px;
 
                     .inner-text {
                         margin: 10px;
@@ -262,7 +264,7 @@
                     .inner-content {
                         margin-top: 5px;
                         margin-left: 20px;
-                        font-size: 40px;
+                        font-size: 30px;
                         text-shadow: 0 0 1.5rem #2DF0FF;
                     }
                 }
@@ -271,12 +273,18 @@
                     margin-left: 20px;
                 }
 
+                .video-player {
+                    width: 640px;
+                    height: 220px;
+                    margin: 10px 50px 0 0;
+                }
+
                 /deep/ .title-number {
                     width: 200px;
                     height: 50px;
                     font-size: 17px;
                     color: white;
-                    margin: 220px 0 0 30px
+                    margin: 10px 0 0 30px
                 }
             }
 
