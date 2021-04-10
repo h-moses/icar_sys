@@ -48,7 +48,7 @@
 <!--                </el-table-column>-->
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="visualDialog(scope.row.recordDegree)" icon="el-icon-edit" size="mini" type="warning">更定</el-button>
+                        <el-button @click="visualDialog(scope.row.recordID,scope.row.alarmDegree)" icon="el-icon-edit" size="mini" type="warning">更定</el-button>
                         <el-button @click="deleteWarning(scope.row.recordID)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
                     </template>
                 </el-table-column>
@@ -57,8 +57,8 @@
         </el-card>
         <el-dialog title="更定评级" :visible.sync="modifyDialogVisible" width="50%" @close="modifyDialogClosed">
             <el-form :model="modifyForm" ref="modifyFormRef" label-width="70px">
-                <el-form-item label="风险等级" prop="alarmDegree">
-                    <el-select v-model="modifyForm.alarmDegree" placeholder="请选择">
+                <el-form-item label="风险等级" prop="degree">
+                    <el-select v-model="modifyForm['degree']">
                         <el-option
                                 v-for="item in options"
                                 :key="item.value"
@@ -90,7 +90,8 @@
                 warningList: [],
                 selectedDate: [],
                 modifyForm: {
-                    recordDegree: ''
+                    record_id: '',
+                    degree: ''
                 },
                 modifyDialogVisible: false,
                 options: [
@@ -106,7 +107,7 @@
                         value: '三级',
                         label: '三级'
                     },
-                ]
+                ],
             }
         },
         created() {
@@ -160,10 +161,18 @@
                 this.$refs.modifyFormRef.resetFields()
             },
             async modifyDegree() {
-
+                console.log(this.modifyForm)
+                const {data:res} = await this.$http.post('alarm/update',this.modifyForm)
+                if (res.code !== 200) {
+                    return this.$message.error("更定评级失败")
+                }
+                await this.getWarningList()
+                this.$message.success("更定评级成功")
+                this.modifyDialogVisible = false
             },
-            visualDialog(recordDegree) {
-                this.modifyForm['alarmDegree'] = recordDegree
+            visualDialog(recordID,recordDegree) {
+                this.modifyForm['record_id'] = recordID
+                this.modifyForm['degree'] = recordDegree
                 this.modifyDialogVisible = true
             }
         },

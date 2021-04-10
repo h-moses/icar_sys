@@ -27,12 +27,12 @@
                 <el-table-column align="center" label="序号" type="index" width="100px"></el-table-column>
                 <el-table-column align="center" label="工单编号" prop="feedbackID"></el-table-column>
                 <el-table-column align="center" label="登录账号" prop="userName"></el-table-column>
-<!--                <el-table-column align="center" label="联系电话" prop="userPhone" width="120px"></el-table-column>-->
+                <el-table-column align="center" label="联系电话" prop="userPhone" width="120px"></el-table-column>
                 <el-table-column align="center" label="工单内容" prop="feedbackContent"></el-table-column>
                 <el-table-column align="center" label="提交时间" prop="feedbackTime"></el-table-column>
                 <el-table-column align="center" label="处理状态" prop="feedbackState" width="100px">
                     <template slot-scope="props">
-                        <el-tag type="success" v-if="props.row.feedbackState === '已处理'">
+                        <el-tag type="info" v-if="props.row.feedbackState === '已关闭'">
                             <i class="el-icon-success"/>
                             已处理
                         </el-tag>
@@ -42,7 +42,7 @@
                         </el-tag>
                         <el-tag type="danger" v-else>
                             <i class="el-icon-warning"/>
-                            未处理
+                            已提交
                         </el-tag>
                     </template>
                 </el-table-column>
@@ -53,9 +53,9 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <!--            <el-pagination :current-page="5" :page-size="5" :page-sizes="[1,2,5,10]"-->
-            <!--                           :total="20" @current-change="handleCurrentChange" @size-change="handleSizeChange"-->
-            <!--                           background layout="total,sizes,prev,pager,next,jumper"></el-pagination>-->
+            <el-pagination :current-page="queryInfo.currentPage" :page-size="queryInfo.pageSize" :page-sizes="[1,2,5,10]"
+                           :total="total" @current-change="handleCurrentChange" @size-change="handleSizeChange"
+                           background layout="total,sizes,prev,pager,next,jumper"></el-pagination>
         </el-card>
     </div>
 </template>
@@ -84,7 +84,12 @@
                     }
                 ],
                 feedbackList: [],
-                loading: true
+                loading: true,
+                queryInfo: {
+                    currentPage:'1',
+                    pageSize:'10',
+                },
+                total:''
             }
         },
         created() {
@@ -114,12 +119,12 @@
                 this.$message.success("删除成功")
             },
             async getFeedbackList() {
-                const {data: res} = await this.$http.post('feedback/view')
+                const {data: res} = await this.$http.post('feedback/view', this.queryInfo)
                 if (res.code !== 200) {
                     return this.$message.error("获取失败")
                 }
                 this.feedbackList = res.data.feedbackRecord['list']
-                console.log(this.feedbackList)
+                this.total = res.data.feedbackRecord['total']
                 this.loading = false
             },
             async searchOrder() {
@@ -128,6 +133,14 @@
                     return this.$message.error("查询失败")
                 }
                 this.feedbackList = res.data.feedbackRecord
+            },
+            handleCurrentChange(newPage) {
+                this.queryInfo.currentPage = newPage
+                this.getFeedbackList()
+            },
+            handleSizeChange(newSize) {
+                this.queryInfo.pageSize = newSize
+                this.getFeedbackList()
             }
         }
     }

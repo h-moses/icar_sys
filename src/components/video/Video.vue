@@ -38,7 +38,7 @@
                 <el-table-column align="center" label="操作" width="300px">
                     <template slot-scope="scope">
                         <el-button @click="scanVideo(scope.row.videoLink)" icon="el-icon-view" size="mini" type="primary">预览</el-button>
-                        <el-button @click="downloadVideo(scope.row.videoID)" icon="el-icon-download" size="mini" type="warning">下载</el-button>
+                        <el-button icon="el-icon-download" size="mini" type="warning">下载</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -55,7 +55,9 @@
 <script>
     import Vue from 'vue'
     import VueCoreVideoPlayer from 'vue-core-video-player'
-
+    // import OSS from 'ali-oss'
+    //
+    // Vue.use(OSS)
     Vue.use(VueCoreVideoPlayer)
 
     export default {
@@ -67,7 +69,8 @@
                 videoList: [],
                 selectedDate: [],
                 scanDialogVisible: false,
-                videoSrc: ''
+                videoSrc: '',
+                // client: null
             }
         },
         created() {
@@ -99,15 +102,33 @@
                 if (this.videoForm.user_name !== "") {
                     searchForm['user_name'] = this.videoForm.user_name
                 }
-                // if (this.videoForm.user_phone !== "") {
-                //     searchForm['user_phone'] = this.videoForm.user_phone
-                // }
-                console.log(searchForm)
                 const {data: res} = await this.$http.post('driveVideo', searchForm)
                 if (res.code !== 200) {
                     return this.$message.error("查询失败")
                 }
                 this.videoList = res.data.videos
+            },
+            // getClient() {
+            //     let _this = this
+            //     _this.client = new OSS({
+            //         region: 'oss-cn-hangzhou',
+            //         accessKeyId: 'LTAI4FyXG841sPuGUdfXs9mU',
+            //         accessKeySecret: 'czgyprNgF3iNja37KlNth77IYHPoHF',
+            //         bucket: 'adas-car',
+            //         secure: false
+            //     })
+            // },
+            async downloadVideo() {
+            //     this.getClient()
+            //     const filename = 'video.mp4' // 自定义文件名。
+            //     const response = {
+            //         'content-disposition': `attachment; filename=${encodeURIComponent(filename)}`
+            //     }
+            //     let url = await this.client.signatureUrl(videoLink, {response})
+            //     const a = document.createElement('a')
+            //     a.setAttribute('download','aaa')
+            //     a.setAttribute('href',url)
+            //     a.click()
             }
         }
     }
