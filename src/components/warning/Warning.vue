@@ -8,7 +8,10 @@
         <el-card>
             <el-form :inline="true" :model="queryWarningForm" ref="searchWarningFormRef">
                 <el-form-item label="登录账号" prop="user_name">
-                    <el-input placeholder="请输入登录账号" v-model="queryWarningForm.user_name"></el-input>
+                    <el-input placeholder="请输入登录账号" v-model="queryWarningForm.user_name" @keyup.enter.native="searchWarning" clearable></el-input>
+                </el-form-item>
+                <el-form-item label="绑定手机" prop="user_phone">
+                    <el-input placeholder="请输入手机号码" v-model="queryWarningForm.user_phone" @keyup.enter.native="searchWarning" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="预警时间" prop="selectedDate">
                     <el-date-picker
@@ -18,7 +21,7 @@
                             range-separator="至"
                             start-placeholder="开始日期"
                             type="daterange"
-                            v-model="queryWarningForm.selectedDate"
+                            v-model="selectedDate"
                             value-format="yyyy-MM-dd">
                     </el-date-picker>
                 </el-form-item>
@@ -29,27 +32,47 @@
             <el-table :data="this.warningList" border stripe v-loading="loading">
                 <el-table-column align="center" label="序号" type="index" width="70px"></el-table-column>
                 <el-table-column align="center" label="预警编号" prop="recordID" width="120px"></el-table-column>
-                <el-table-column align="center" label="登录账号" prop="userID" width="120px"></el-table-column>
+                <el-table-column align="center" label="用户名称" prop="userName" width="120px"></el-table-column>
+                <el-table-column align="center" label="联系方式" prop="userPhone" width="120px"></el-table-column>
                 <el-table-column align="center" label="预警时间" prop="alarmTime" width="180px"></el-table-column>
                 <el-table-column align="center" label="预警地点" prop="location"></el-table-column>
                 <el-table-column align="center" label="预警原因" prop="alarmReason"></el-table-column>
-                <el-table-column align="center" label="视频编号" prop="video_id" width="120px">
-                    <template slot-scope="props">
-                        <el-link :underline="false" type="danger">
-                            <el-icon class="el-icon-link"/>
-                            {{props.row.video_id}}
-                        </el-link>
-                    </template>
-                </el-table-column>
+                <el-table-column align="center" label="风险等级" prop="alarmDegree" width="90"></el-table-column>
+<!--                <el-table-column align="center" label="视频编号" prop="video_id" width="120px">-->
+<!--                    <template slot-scope="props">-->
+<!--                        <el-link :underline="false" type="danger">-->
+<!--                            <el-icon class="el-icon-link"/>-->
+<!--                            {{props.row.video_id}}-->
+<!--                        </el-link>-->
+<!--                    </template>-->
+<!--                </el-table-column>-->
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="deleteUserById(scope.row.id)" icon="el-icon-edit" size="mini" type="warning">评定</el-button>
-                        <el-button @click="deleteWarning(scope.row)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
+                        <el-button @click="visualDialog(scope.row.recordDegree)" icon="el-icon-edit" size="mini" type="warning">更定</el-button>
+                        <el-button @click="deleteWarning(scope.row.recordID)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
             <!--            <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="5" :page-sizes="[1,2,5,10]" :page-size="5" layout="total,sizes,prev,pager,next,jumper" :total="20"></el-pagination>-->
         </el-card>
+        <el-dialog title="更定评级" :visible.sync="modifyDialogVisible" width="50%" @close="modifyDialogClosed">
+            <el-form :model="modifyForm" ref="modifyFormRef" label-width="70px">
+                <el-form-item label="风险等级" prop="alarmDegree">
+                    <el-select v-model="modifyForm.alarmDegree" placeholder="请选择">
+                        <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="modifyDialogVisible=false">取 消</el-button>
+                <el-button type="primary" @click="modifyDegree">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -59,11 +82,31 @@
         data() {
             return {
                 queryWarningForm: {
+                    user_name:'',
                     user_phone: '',
-                    selectedDate: []
+
                 },
                 loading: true,
-                warningList: []
+                warningList: [],
+                selectedDate: [],
+                modifyForm: {
+                    recordDegree: ''
+                },
+                modifyDialogVisible: false,
+                options: [
+                    {
+                        value: '一级',
+                        label: '一级'
+                    },
+                    {
+                        value: '二级',
+                        label: '二级'
+                    },
+                    {
+                        value: '三级',
+                        label: '三级'
+                    },
+                ]
             }
         },
         created() {
@@ -75,10 +118,10 @@
                 if (res.code !== 200) {
                     return this.$message.error("获取预警记录失败")
                 }
-                this.warningList = res.data
+                this.warningList = res.data.alarmRecord
                 this.loading = false
             },
-            async deleteWarning(row) {
+            async deleteWarning(recordID) {
                 const confirmResult = await this.$confirm('确认删除该条预警记录?', '删除预警记录', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -88,9 +131,7 @@
                 if (confirmResult !== 'confirm') {
                     return this.$message.info('取消删除')
                 }
-                const data = new FormData()
-                data.append("record_id", row.alarmID)
-                const {data: res} = await this.$http.post('alarm/delete', data)
+                const {data: res} = await this.$http.post('alarm/delete', {"record_id":recordID})
                 if (res.code !== 200) {
                     return this.$message.error("删除失败")
                 }
@@ -98,15 +139,32 @@
                 await this.getWarningList()
             },
             async searchWarning() {
-                const data = new FormData()
-                data.append("user_phone", this.queryWarningForm.user_phone)
-                data.append('start', this.queryWarningForm.selectedDate[0])
-                data.append('end', this.queryWarningForm.selectedDate[1])
-                const {data: res} = await this.$http.post('alarm/view', this.queryWarningForm)
+                const searchForm = {}
+                if (null !== this.selectedDate) {
+                    searchForm['start'] = this.selectedDate[0]
+                    searchForm['end'] = this.selectedDate[1]
+                }
+                if (this.queryWarningForm.user_name !== "") {
+                    searchForm['user_name'] = this.queryWarningForm.user_name
+                }
+                if (this.queryWarningForm.user_phone !== "") {
+                    searchForm['user_phone'] = this.queryWarningForm.user_phone
+                }
+                const {data: res} = await this.$http.post('alarm/view', searchForm)
                 if (res.code !== 200) {
                     return this.$message.error("查询失败")
                 }
-                this.warningList = res.data
+                this.warningList = res.data.alarmRecord
+            },
+            modifyDialogClosed() {
+                this.$refs.modifyFormRef.resetFields()
+            },
+            async modifyDegree() {
+
+            },
+            visualDialog(recordDegree) {
+                this.modifyForm['alarmDegree'] = recordDegree
+                this.modifyDialogVisible = true
             }
         },
 

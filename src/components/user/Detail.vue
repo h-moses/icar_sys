@@ -45,7 +45,7 @@
                        </el-form-item>
                    </el-form>
                    <el-footer>
-                       <el-button type="primary" plain size="small" @click="saveModification">保存</el-button>
+                       <el-button type="primary" plain size="small" @click="back">保存</el-button>
                        <el-button type="danger" plain size="small" @click="back">返回</el-button>
                    </el-footer>
                </el-col>

@@ -7,12 +7,12 @@
         </el-breadcrumb>
         <el-card v-loading="loading">
             <el-form :inline="true" :model="videoForm" ref="searchUserFormRef">
-                <el-form-item label="视频编号" prop="video_id">
-                    <el-input placeholder="请输入账号ID" v-model="videoForm.video_id"></el-input>
+                <el-form-item label="用户名称" prop="user_name">
+                    <el-input placeholder="请输入用户名称" v-model="videoForm.user_name" @keyup.enter.native="searchVideo" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="登录账号" prop="user_name">
-                    <el-input placeholder="请输入登录账号" v-model="videoForm.user_name"></el-input>
-                </el-form-item>
+<!--                <el-form-item label="联系方式" prop="user_phone">-->
+<!--                    <el-input placeholder="请输入手机号码" v-model="videoForm.user_phone" @keyup.enter.native="searchVideo"></el-input>-->
+<!--                </el-form-item>-->
                 <el-form-item label="拍摄时间" prop="selectedDate">
                     <el-date-picker
                             end-placeholder="结束日期"
@@ -21,24 +21,24 @@
                             range-separator="至"
                             start-placeholder="开始日期"
                             type="daterange"
-                            v-model="videoForm.selectedDate"
+                            v-model="selectedDate"
                             value-format="yyyy-MM-dd">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item>
-                    <el-button icon="el-icon-search" plain size="small" type="primary">查询</el-button>
+                    <el-button icon="el-icon-search" plain size="small" type="primary" @click="searchVideo">查询</el-button>
                 </el-form-item>
             </el-form>
             <el-table :data="this.videoList" border stripe>
                 <el-table-column align="center" label="序号" type="index" width="100px"></el-table-column>
-                <el-table-column align="center" label="视频编号" prop="video_id"></el-table-column>
-                <el-table-column align="center" label="登录账号" prop="user_id"></el-table-column>
-                <el-table-column align="center" label="拍摄时间" prop="video_time"></el-table-column>
-                <el-table-column align="center" label="记录时长" prop="video_duration"></el-table-column>
+                <el-table-column align="center" label="视频编号" prop="videoID"></el-table-column>
+                <el-table-column align="center" label="登录账号" prop="userName"></el-table-column>
+                <el-table-column align="center" label="拍摄时间" prop="videoTime"></el-table-column>
+                <el-table-column align="center" label="记录时长" prop="videoDuration"></el-table-column>
                 <el-table-column align="center" label="操作" width="300px">
                     <template slot-scope="scope">
-                        <el-button @click="scanVideo(scope.row.id)" icon="el-icon-view" size="mini" type="primary">预览</el-button>
-                        <el-button @click="downloadVideo(scope.row.id)" icon="el-icon-download" size="mini" type="warning">下载</el-button>
+                        <el-button @click="scanVideo(scope.row.videoLink)" icon="el-icon-view" size="mini" type="primary">预览</el-button>
+                        <el-button @click="downloadVideo(scope.row.videoID)" icon="el-icon-download" size="mini" type="warning">下载</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -46,21 +46,28 @@
             <!--                           :total="20" @current-change="handleCurrentChange" @size-change="handleSizeChange"-->
             <!--                           background layout="total,sizes,prev,pager,next,jumper"></el-pagination>-->
         </el-card>
+        <el-dialog title="视频预览" :visible.sync="scanDialogVisible" width="50%" @close="scanDialogVisibleClosed">
+            <vue-core-video-player class="video-player" :src="this.videoSrc"></vue-core-video-player>
+        </el-dialog>
     </div>
 </template>
 
 <script>
+    import Vue from 'vue'
+    import VueCoreVideoPlayer from 'vue-core-video-player'
+
+    Vue.use(VueCoreVideoPlayer)
+
     export default {
         name: "Video",
         data() {
             return {
-                videoForm: {
-                    video_id: '',
-                    user_name: '',
-                    selectedDate: ''
-                },
+                videoForm: {},
                 loading: true,
-                videoList: []
+                videoList: [],
+                selectedDate: [],
+                scanDialogVisible: false,
+                videoSrc: ''
             }
         },
         created() {
@@ -68,8 +75,39 @@
         },
         methods: {
             async getVideoList() {
-
+                const {data: res} = await this.$http.post('driveVideo')
+                if (res.code !== 200) {
+                    return this.$message.error("获取数据失败")
+                }
+                this.videoList = res.data.videos
                 this.loading = false
+            },
+            scanVideo(videoLink) {
+                this.scanDialogVisible = true
+                this.videoSrc = videoLink
+            },
+            scanDialogVisibleClosed() {
+                this.videoSrc = ""
+            },
+            async searchVideo() {
+                const searchForm = {}
+                if (this.selectedDate.length > 0) {
+                    console.log(this.selectedDate)
+                    searchForm['start'] = this.selectedDate[0]
+                    searchForm['end'] = this.selectedDate[1]
+                }
+                if (this.videoForm.user_name !== "") {
+                    searchForm['user_name'] = this.videoForm.user_name
+                }
+                // if (this.videoForm.user_phone !== "") {
+                //     searchForm['user_phone'] = this.videoForm.user_phone
+                // }
+                console.log(searchForm)
+                const {data: res} = await this.$http.post('driveVideo', searchForm)
+                if (res.code !== 200) {
+                    return this.$message.error("查询失败")
+                }
+                this.videoList = res.data.videos
             }
         }
     }

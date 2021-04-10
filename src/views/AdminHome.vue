@@ -130,7 +130,7 @@
         align-items: center;
         font-size: 20px;
         color: #FFF;
-        background-color: #263445;
+        background-color: #0C1442;
 
         > .left_region {
             height: 100%;
@@ -140,7 +140,7 @@
             .aside-button {
                 height: 100%;
                 width: 50px;
-                background-color: #686A6C;
+                background-color: #353F7B;
                 opacity: 0.9;
                 border: 0;
                 border-radius: 0;
@@ -162,11 +162,12 @@
     }
 
     .el-aside {
-        background-color: #263445;
+        background-color: #0C1442;
 
         .el-menu {
             margin-left: 0;
             border-right: none;
+
 
             .el-menu-item {
                 box-sizing: border-box;
@@ -174,6 +175,7 @@
                 padding-left: 18px !important;
                 display: flex;
                 align-items: center;
+                background-color: #0C1442 !important;
 
                 span {
                     margin-left: 20px;

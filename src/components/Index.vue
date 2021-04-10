@@ -45,7 +45,7 @@
                                     <div class="inner-text inner-content">2000</div>
                                 </dv-border-box-8>
                             </el-row>
-                            <vue-core-video-player class="video-player" @play="player" src="https://car-recognition.oss-cn-beijing.aliyuncs.com/detection.mp4"></vue-core-video-player>
+                            <vue-core-video-player class="video-player" src="https://car-recognition.oss-cn-beijing.aliyuncs.com/detect.mp4"></vue-core-video-player>
                             <dv-decoration-11 class="title-number">预警走势图</dv-decoration-11>
                             <warning-number-line-chart class="warning-line" style="height: 230px"></warning-number-line-chart>
                         </el-col>
@@ -173,8 +173,9 @@
         position: relative;
         height: 100%;
         display: flex;
-        background: #061437 url("../assets/bk_logo.png") no-repeat center;
-        background-size: 30%;
+        /*background: #061437 url("../assets/bk_logo.png") no-repeat center;*/
+        /*background-size: 30%;*/
+        background-color: #061437;
 
         .header {
             /deep/ .header-top {

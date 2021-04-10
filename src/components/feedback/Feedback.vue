@@ -119,7 +119,7 @@
                     return this.$message.error("获取失败")
                 }
                 this.feedbackList = res.data.feedbackRecord['list']
-                // console.log(this.feedbackList)
+                console.log(this.feedbackList)
                 this.loading = false
             },
             async searchOrder() {
