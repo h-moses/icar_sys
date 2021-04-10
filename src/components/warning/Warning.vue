@@ -37,7 +37,7 @@
                 <el-table-column align="center" label="预警时间" prop="alarmTime" width="180px"></el-table-column>
                 <el-table-column align="center" label="预警地点" prop="location"></el-table-column>
                 <el-table-column align="center" label="预警原因" prop="alarmReason"></el-table-column>
-                <el-table-column align="center" label="风险等级" prop="alarmDegree" width="100"  :filters="filterDegree" :filter-method="handleFilter">
+                <el-table-column align="center" label="风险等级" prop="alarmDegree" width="100" :filters="filterDegree" :filter-method="handleFilter">
                     <template slot-scope="scope">
                         <el-tag :type="degreeTags[scope.row.alarmDegree]" effect="plain">{{scope.row.alarmDegree}}</el-tag>
                     </template>
@@ -184,7 +184,6 @@
                 this.$refs.modifyFormRef.resetFields()
             },
             async modifyDegree() {
-                console.log(this.modifyForm)
                 const {data:res} = await this.$http.post('alarm/update',this.modifyForm)
                 if (res.code !== 200) {
                     return this.$message.error("更定评级失败")

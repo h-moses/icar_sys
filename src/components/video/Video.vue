@@ -39,6 +39,7 @@
                     <template slot-scope="scope">
                         <el-button @click="scanVideo(scope.row.videoLink)" icon="el-icon-view" size="mini" type="primary">预览</el-button>
                         <el-button icon="el-icon-download" size="mini" type="warning">下载</el-button>
+                        <el-button icon="el-icon-delete" size="mini" type="danger">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

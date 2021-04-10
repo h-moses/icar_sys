@@ -8,15 +8,12 @@
 
         <el-card>
             <el-form :inline="true" :model="feedbackForm" ref="searchUserFormRef">
-                <!--                <el-form-item label="工单编号" prop="feedback_id">-->
-                <!--                    <el-input placeholder="请输入工单编号" v-model="feedbackForm.feedback_id"></el-input>-->
-                <!--                </el-form-item>-->
                 <el-form-item label="联系电话" prop="user_phone">
-                    <el-input placeholder="请输入联系电话" v-model="feedbackForm.user_phone"></el-input>
+                    <el-input placeholder="请输入联系电话" v-model="feedbackForm.user_phone" @keyup.enter.native="searchOrder" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="处理状态" prop="feedback_state">
                     <el-select placeholder="请选择处理状态" v-model="feedbackForm.feedback_state">
-                        <el-option :key="item.value" :label="item.label" :value="item.value" v-for="item in this.feedback_states"></el-option>
+                        <el-option :key="item.value" :label="item.label" :value="item.label" v-for="item in this.feedback_states"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -30,11 +27,11 @@
                 <el-table-column align="center" label="联系电话" prop="userPhone" width="120px"></el-table-column>
                 <el-table-column align="center" label="工单内容" prop="feedbackContent"></el-table-column>
                 <el-table-column align="center" label="提交时间" prop="feedbackTime"></el-table-column>
-                <el-table-column align="center" label="处理状态" prop="feedbackState" width="100px">
+                <el-table-column align="center" label="处理状态" prop="feedbackState" width="100px" :filters="filterState" :filter-method="handleFilter">
                     <template slot-scope="props">
                         <el-tag type="info" v-if="props.row.feedbackState === '已关闭'">
                             <i class="el-icon-success"/>
-                            已处理
+                            已关闭
                         </el-tag>
                         <el-tag type="warning" v-else-if="props.row.feedbackState === '处理中'">
                             <i class="el-icon-remove"/>
@@ -72,7 +69,7 @@
                 feedback_states: [
                     {
                         'value': 0,
-                        'label': '未处理'
+                        'label': '已提交'
                     },
                     {
                         'value': 1,
@@ -80,16 +77,30 @@
                     },
                     {
                         'value': 2,
-                        'label': '已处理'
+                        'label': '已关闭'
                     }
                 ],
                 feedbackList: [],
                 loading: true,
                 queryInfo: {
-                    currentPage:'1',
-                    pageSize:'10',
+                    currentPage: 1,
+                    pageSize: 5,
                 },
-                total:''
+                total:'',
+                filterState: [
+                    {
+                        text: '已提交',
+                        value: '已提交'
+                    },
+                    {
+                        text: '处理中',
+                        value: '处理中'
+                    },
+                    {
+                        text: '已关闭',
+                        value: '已关闭'
+                    },
+                ],
             }
         },
         created() {
@@ -128,11 +139,22 @@
                 this.loading = false
             },
             async searchOrder() {
-                const {data: res} = await this.$http.post('feedback/view', this.feedbackForm)
+                const data = {}
+                data['currentPage'] = parseInt(this.queryInfo.currentPage)
+                data['pageSize'] = parseInt(this.queryInfo.pageSize)
+                if (this.feedbackForm.user_phone !== '') {
+                    data['user_phone'] = this.feedbackForm.user_phone
+                }
+                if (this.feedbackForm.feedback_state !== '') {
+                    data['feedback_state'] = this.feedbackForm.feedback_state
+                }
+                console.log(data)
+                const {data: res} = await this.$http.post('feedback/view', data)
                 if (res.code !== 200) {
                     return this.$message.error("查询失败")
                 }
-                this.feedbackList = res.data.feedbackRecord
+                this.feedbackList = res.data.feedbackRecord['list']
+                this.total = res.data.feedbackRecord['total']
             },
             handleCurrentChange(newPage) {
                 this.queryInfo.currentPage = newPage
@@ -141,6 +163,10 @@
             handleSizeChange(newSize) {
                 this.queryInfo.pageSize = newSize
                 this.getFeedbackList()
+            },
+            handleFilter(value,row,column) {
+                const property = column['property']
+                return row[property] === value
             }
         }
     }
@@ -157,6 +183,12 @@
 
         .el-pagination {
             margin-top: 15px;
+        }
+
+        /deep/ .el-icon-arrow-down {
+            width: 20px;
+            height: 18px;
+            box-sizing: border-box;
         }
     }
 
