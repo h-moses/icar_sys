@@ -37,7 +37,11 @@
                 <el-table-column align="center" label="预警时间" prop="alarmTime" width="180px"></el-table-column>
                 <el-table-column align="center" label="预警地点" prop="location"></el-table-column>
                 <el-table-column align="center" label="预警原因" prop="alarmReason"></el-table-column>
-                <el-table-column align="center" label="风险等级" prop="alarmDegree" width="90"></el-table-column>
+                <el-table-column align="center" label="风险等级" prop="alarmDegree" width="100"  :filters="filterDegree" :filter-method="handleFilter">
+                    <template slot-scope="scope">
+                        <el-tag :type="degreeTags[scope.row.alarmDegree]" effect="plain">{{scope.row.alarmDegree}}</el-tag>
+                    </template>
+                </el-table-column>
 <!--                <el-table-column align="center" label="视频编号" prop="video_id" width="120px">-->
 <!--                    <template slot-scope="props">-->
 <!--                        <el-link :underline="false" type="danger">-->
@@ -108,6 +112,25 @@
                         label: '三级'
                     },
                 ],
+                degreeTags: {
+                    '一级': 'danger',
+                    '二级': 'warning',
+                    '三级': 'primary'
+                },
+                filterDegree: [
+                    {
+                        text: '一级',
+                        value: '一级'
+                    },
+                    {
+                        text: '二级',
+                        value: '二级'
+                    },
+                    {
+                        text: '三级',
+                        value: '三级'
+                    },
+                ],
             }
         },
         created() {
@@ -174,6 +197,10 @@
                 this.modifyForm['record_id'] = recordID
                 this.modifyForm['degree'] = recordDegree
                 this.modifyDialogVisible = true
+            },
+            handleFilter(value,row,column) {
+                const property = column['property']
+                return row[property] === value
             }
         },
 
@@ -191,6 +218,12 @@
 
         .el-pagination {
             margin-top: 15px;
+        }
+
+        /deep/ .el-icon-arrow-down {
+            width: 20px;
+            height: 18px;
+            box-sizing: border-box;
         }
     }
 

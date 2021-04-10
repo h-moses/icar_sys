@@ -28,11 +28,8 @@
                 <el-table-column align="center" label="最近登录" prop="lastLogin"></el-table-column>
                 <el-table-column align="center" label="驾驶评级" prop="userRating" :filters="filterDegree" :filter-method="handleFilter">
                     <template slot-scope="scope">
-                        <el-tag type="success" v-if="scope.row.userRating === 'A'">{{scope.row.userRating}}</el-tag>
-                        <el-tag v-else-if="scope.row.userRating === 'B'">{{scope.row.userRating}}</el-tag>
-                        <el-tag type="warning" v-else-if="scope.row.userRating === 'C'">{{scope.row.userRating}}</el-tag>
-                        <el-tag type="danger" v-else-if="scope.row.userRating === 'D'">{{scope.row.userRating}}</el-tag>
-                        <el-tag type="info" v-else>未评级</el-tag>
+                        <el-tag :type="ratingTags[scope.row.userRating]" effect="plain">{{scope.row.userRating}}</el-tag>
+
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="操作">
@@ -78,7 +75,13 @@
                         text: 'D',
                         value: 'D'
                     }
-                ]
+                ],
+                ratingTags: {
+                    'A':'success',
+                    'B':'primary',
+                    'C':'warning',
+                    'D':'danger'
+                }
             }
         },
         created() {
