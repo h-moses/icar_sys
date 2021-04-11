@@ -65,19 +65,19 @@
             return {
                 activePath: this.$route.path,
                 menu_icons: {
+                    '/index': 'icar_sys icartongjifenxi1',
                     '/user': 'icar_sys icaryonghu',
                     '/warning': 'icar_sys icar-yujingyucefenxi',
                     '/video': 'icar_sys icarshipin2',
                     '/feedback': 'icar_sys icardrxx66',
-                    '/analysis': 'icar_sys icartongjifenxi1',
                     '/syslog': 'icar_sys icarrizhi'
                 },
                 menu_item: {
+                    '/index': '首页',
                     '/user': '用户管理',
                     '/warning': '预警管理',
                     '/video': '视频管理',
                     '/feedback': '工单管理',
-                    '/analysis': '统计分析',
                     '/syslog': '系统日志'
                 },
                 topBarFixed: false,

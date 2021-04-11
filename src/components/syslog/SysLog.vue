@@ -2,7 +2,7 @@
     <div class="syslog">
         <!--    面包屑导航区-->
         <el-breadcrumb separator-class="el-icon-arrow-right">
-            <el-breadcrumb-item :to="{path:'/adminHome'}">首页</el-breadcrumb-item>
+<!--            <el-breadcrumb-item :to="{path:'/adminHome'}">首页</el-breadcrumb-item>-->
             <el-breadcrumb-item>系统日志</el-breadcrumb-item>
         </el-breadcrumb>
         <el-card v-loading="loading">
@@ -26,37 +26,19 @@
                 </el-form-item>
             </el-form>
             <el-table :data="this.logList" border stripe>
-                <!--                <el-table-column type="expand">-->
-                <!--                    <template slot-scope="props">-->
-                <!--                        <el-form inline label-position="left">-->
-                <!--                            <el-form-item label="登录账号">{{props.row.userName}}</el-form-item>-->
-                <!--                            <el-form-item label="联系电话">{{props.row.userPhone}}</el-form-item>-->
-                <!--                            <el-form-item label="注册时间">{{props.row.registerTime}}</el-form-item>-->
-                <!--                            <el-form-item label="最近登录">{{props.row.lastLogin}}</el-form-item>-->
-                <!--                            <el-form-item label="车牌号码">{{props.row.userName}}</el-form-item>-->
-                <!--                            <el-form-item label="预警次数">{{props.row.userName}}</el-form-item>-->
-                <!--                            <el-form-item label="驾车评级">{{props.row.userName}}</el-form-item>-->
-                <!--                        </el-form>-->
-                <!--                    </template>-->
-                <!--                </el-table-column>-->
                 <el-table-column align="center" label="序号" type="index" width="100px"></el-table-column>
                 <el-table-column align="center" label="日志编号" prop="userName"></el-table-column>
                 <el-table-column align="center" label="日志时间" prop="userName"></el-table-column>
                 <el-table-column align="center" label="组件实例" prop="userPhone"></el-table-column>
                 <el-table-column align="center" label="日志描述" prop="registerTime"></el-table-column>
-                <el-table-column align="center" label="错误定位" prop="registerTime"></el-table-column>
-                <el-table-column align="center" label="日志类别" prop="userRating">
+<!--                <el-table-column align="center" label="错误定位" prop="registerTime"></el-table-column>-->
+                <el-table-column align="center" label="日志类型" prop="logType">
                     <template slot-scope="scope">
-                        <el-tag type="success" v-if="scope.row.userRating === 'A'">{{scope.row.userRating}}</el-tag>
-                        <el-tag v-else-if="scope.row.userRating === 'B'">{{scope.row.userRating}}</el-tag>
-                        <el-tag type="warning" v-else-if="scope.row.userRating === 'C'">{{scope.row.userRating}}</el-tag>
-                        <el-tag type="danger" v-else-if="scope.row.userRating === 'D'">{{scope.row.userRating}}</el-tag>
-                        <el-tag type="info" v-else>未评级</el-tag>
+                        <el-tag :type="this.typesTag[scope.row.logType]">{{scope.row.logType}}</el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="showUserDetails(scope.row)" icon="el-icon-view" size="mini" type="primary">下载</el-button>
                         <el-button @click="deleteUserInfo(scope.row)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
                     </template>
                 </el-table-column>
@@ -77,17 +59,21 @@
                 },
                 logTypes: [
                     {
-                        'value': 0,
+                        'value': 'error',
                         'label': '错误'
                     },
                     {
-                        'value': 1,
+                        'value': 'warning',
                         'label': '警告'
                     }
                 ],
                 queryLogFormRules: {},
                 logList: [],
-                loading: false
+                loading: false,
+                typesTag: {
+                    'error':'danger',
+                    'warning':'warning'
+                }
             }
         },
 
@@ -99,6 +85,7 @@
 
             },
             async getLogList() {
+                // const {data:res} = await this.$http.post('syslog')
                 this.loading = false
             }
         }

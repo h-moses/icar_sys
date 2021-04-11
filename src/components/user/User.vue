@@ -2,7 +2,7 @@
     <div class="user">
         <!--    面包屑导航区-->
         <el-breadcrumb separator-class="el-icon-arrow-right">
-            <el-breadcrumb-item :to="{path:'/adminHome'}">首页</el-breadcrumb-item>
+<!--            <el-breadcrumb-item :to="{path:'/adminHome'}">首页</el-breadcrumb-item>-->
             <el-breadcrumb-item>用户管理</el-breadcrumb-item>
         </el-breadcrumb>
         <el-card v-loading="loading">
@@ -28,7 +28,7 @@
                 <el-table-column align="center" label="最近登录" prop="lastLogin"></el-table-column>
                 <el-table-column align="center" label="驾驶评级" prop="userRating" :filters="filterDegree" :filter-method="handleFilter">
                     <template slot-scope="scope">
-                        <el-tag :type="ratingTags[scope.row.userRating]" effect="plain">{{scope.row.userRating}}</el-tag>
+                        <el-tag :type="ratingTags[scope.row.userRating]" effect="plain">{{scope.row.userRating}}级</el-tag>
 
                     </template>
                 </el-table-column>

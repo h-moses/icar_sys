@@ -22,17 +22,40 @@
             height: {
                 type:String,
                 default: '250px'
+            },
+            chartData: {
+                type:Array,
+                default: null
             }
         },
         mounted() {
             this.$nextTick(() => {
-                this.initLineChart()
+                if (this.chartData === null) {
+                    console.log("null")
+                }
+                this.initChart()
             })
         },
         data() {
           return {
-              chart: null
+              chart: null,
+              months: [],
+              nums: []
           }
+        },
+        watch: {
+            chartData: {
+                deep: true,
+                handler(value) {
+                    for (let i = 0;i < value.length; ++i) {
+                        this.months[i] = value[i].month
+                        this.nums[i] = value[i].num
+                    }
+                    console.log("months:" + this.months)
+                    console.log("nums:" + this.nums)
+                    this.setOption()
+                }
+            }
         },
         beforeDestroy() {
             if (!this.chart) {
@@ -42,14 +65,17 @@
             this.chart = null
         },
         methods: {
-            initLineChart() {
-                this.chart = echarts.init(this.$el,'macarons')
+            initChart() {
+                this.chart = echarts.init(this.$el, 'macarons')
+                this.setOptions(this.chartData)
+            },
+            setOptions() {
                 let option;
                 option = {
                     xAxis: {
                         type: 'category',
                         boundaryGap: false,
-                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                        data: this.months
                     },
                     yAxis: {
                         type: 'value'
@@ -81,7 +107,7 @@
                     },
                     series: [{
                         name: '预警数量',
-                        data: [820, 932, 901, 934, 1290, 1330, 1320],
+                        data: this.nums,
                         type: 'line',
                         areaStyle: {
                             color: {

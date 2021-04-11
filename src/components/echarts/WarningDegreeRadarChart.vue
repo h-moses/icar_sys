@@ -4,13 +4,8 @@
 
 <script>
     import echarts from 'echarts'
-    // import * as echarts from 'echarts/core'
     require('echarts/theme/macarons')
-    // import {TitleComponent,TooltipComponent,LegendComponent} from 'echarts/components'
-    // import {RadarChart} from 'echarts/charts'
-    // import {CanvasRenderer} from 'echarts/renderers'
     import resize from "./mixins/resize";
-    // echarts.use([TitleComponent,TooltipComponent,LegendComponent,RadarChart,CanvasRenderer])
 
     const animationDuration = 3000
 
@@ -29,16 +24,28 @@
             height: {
                 type:String,
                 default: '250px'
+            },
+            chartData: {
+                type: Object,
+                required: true
             }
         },
         data() {
             return {
-                chart: null
+                chart: null,
+            }
+        },
+        watch: {
+            chartData: {
+                deep: true,
+                handler() {
+                    this.setOption()
+                }
             }
         },
         mounted() {
             this.$nextTick(() => {
-                this.initRadar()
+                this.initChart()
             })
         },
         beforeDestroy() {
@@ -49,31 +56,28 @@
             this.chart = null
         },
         methods: {
-            async getDegreeData() {
-
+            initChart() {
+                this.chart = echarts.init(this.$el, 'macarons')
+                this.setOptions()
             },
-            initRadar() {
-                this.chart = echarts.init(this.$el,'macarons')
+            setOptions() {
                 let option;
 
                 option = {
-                    title: {
-                        text: ''
-                    },
                     tooltip: {
                         show: true,
                         trigger:'item',
                         formatter:function (params) {
-                            let res = params.name + "<br/>";
+                            let res = params.seriesName + '<br/>';
                             for (let i = 0; i < params.value.length; i++) {
-                                res += params.value[i] + "<br/>"
+                                res += params.name[i] + "：" + params.value[i] + "<br/>"
                             }
-                            console.log(res)
                             return res
                         }
                     },
                     radar: {
                         shape: 'circle',
+                        splitNumber: 3,
                         axisName: {
                             textStyle: {
                                 color: '#fff',
@@ -83,26 +87,20 @@
                             }
                         },
                         indicator: [
-                            { name: '一级', max: 6500},
-                            { name: '二级', max: 16000},
-                            { name: '三级', max: 30000},
-                            { name: '四级', max: 38000},
-
+                            { name: '一级', max: 800},
+                            { name: '二级', max: 800},
+                            { name: '三级', max: 800},
                         ]
                     },
                     series: [{
-                        name: '预算 vs 开销（Budget vs spending）',
+                        name: '预警风险等级对比',
                         type: 'radar',
                         areaStyle: {normal:{}},
                         data: [
                             {
-                                value: [4300, 10000, 28000, 35000],
-                                name: '预算分配'
+                                value: [this.chartData['oneDegree'],this.chartData['twoDegree'],this.chartData['threeDegree']],
+                                name: ['一级','二级','三级']
                             },
-                            {
-                                value: [5000, 14000, 28000, 31000],
-                                name: '实际开销'
-                            }
                         ]
                     }],
                     animationDuration: animationDuration

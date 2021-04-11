@@ -5,7 +5,6 @@ import User from "../components/user/User";
 import Video from "../components/video/Video";
 import Warning from "../components/warning/Warning";
 import Feedback from "../components/feedback/Feedback";
-import Analysis from "../components/analysis/Analysis";
 import Detail from "../components/user/Detail";
 import Reply from "../components/feedback/Reply";
 import AdminLogin from "../views/AdminLogin";
@@ -60,11 +59,6 @@ const routes = [
                 path: '/reply/:feedback_id',
                 name: 'Reply',
                 component: Reply
-            },
-            {
-                path: '/analysis',
-                name: 'Analysis',
-                component: Analysis
             },
             {
                 path: '/syslog',

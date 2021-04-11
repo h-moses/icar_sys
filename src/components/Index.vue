@@ -24,9 +24,9 @@
                     <div class="left">
                         <el-col>
                             <dv-decoration-11 class="title-degree">风险等级</dv-decoration-11>
-                            <warning-degree-radar-chart class="degree-radar" style="width: 80%"></warning-degree-radar-chart>
+                            <warning-degree-radar-chart class="degree-radar" style="width: 80%" :chart-data="radarMap"></warning-degree-radar-chart>
                             <dv-decoration-11 class="title-user-number">用户走势图</dv-decoration-11>
-                            <warning-number-line-chart class="line-user-number" style="width: 95%;height: 230px"></warning-number-line-chart>
+                            <warning-number-line-chart class="line-user-number" style="width: 95%;height: 230px" :chart-data="this.userTrend"></warning-number-line-chart>
                         </el-col>
                     </div>
                     <div class="center">
@@ -34,20 +34,20 @@
                             <el-row>
                                 <dv-border-box-8 class="border-text">
                                     <div class="inner-text inner-title">用户总人数</div>
-                                    <div class="inner-text inner-content">2000</div>
+                                    <div class="inner-text inner-content">{{this.userSize}}</div>
                                 </dv-border-box-8>
                                 <dv-border-box-8 class="border-text">
                                     <div class="inner-text inner-title">当天预警数</div>
-                                    <div class="inner-text inner-content">2000</div>
+                                    <div class="inner-text inner-content">{{this.todaySize}}</div>
                                 </dv-border-box-8>
                                 <dv-border-box-8 class="border-text">
                                     <div class="inner-text inner-title">预警总数</div>
-                                    <div class="inner-text inner-content">2000</div>
+                                    <div class="inner-text inner-content">{{this.alarmSize}}</div>
                                 </dv-border-box-8>
                             </el-row>
                             <vue-core-video-player class="video-player" src="https://car-recognition.oss-cn-beijing.aliyuncs.com/detect.mp4"></vue-core-video-player>
                             <dv-decoration-11 class="title-number">预警走势图</dv-decoration-11>
-                            <warning-number-line-chart class="warning-line" style="height: 230px"></warning-number-line-chart>
+                            <warning-number-line-chart class="warning-line" style="height: 230px" :chart-data="this.alarmTrend"></warning-number-line-chart>
                         </el-col>
                     </div>
                     <div class="right">
@@ -84,31 +84,31 @@
                 config: {
                     data: [
                         {
-                            name: '南阳',
-                            value: 167
+                            name: '上海',
+                            value: 1670
                         },
                         {
-                            name: '周口',
-                            value: 123
+                            name: '北京',
+                            value: 1230
                         },
                         {
-                            name: '漯河',
-                            value: 98
+                            name: '杭州',
+                            value: 980
                         },
                         {
-                            name: '郑州',
-                            value: 75
+                            name: '南京',
+                            value: 750
                         },
                         {
-                            name: '西峡',
-                            value: 66
+                            name: '湘潭',
+                            value: 660
                         },
                     ],
                     unit: '起',
                     showValue: true
                 },
                 warning_board: {
-                    header: ['用户', '车牌', '描述', '地点'],
+                    header: ['用户', '描述', '距离', '风险等级'],
                     data: [
                         ['行1列1', '行1列2', '行1列3', '行1列4'],
                         ['行2列1', '行2列2', '行2列3', '行2列4'],
@@ -122,46 +122,37 @@
                         ['行10列1', '行10列2', '行10列3', '行10列4']
                     ],
                     align: ['center'],
-                    columnWidth: [100],
+                    columnWidth: [95],
                     headerBGC: 'transparent',
                     oddRowBGC: 'transparent',
                     evenRowBGC: '#2B3043',
                     rowNum: 6,
                 },
+                userSize: 0,
+                userTrend: [],
+                todaySize: 0,
+                alarmTrend: [],
+                alarmSize: 0,
+                latestWarning: [],
+                radarMap: {}
             }
         },
         created() {
             this.getData()
         },
         methods: {
-            initChart() {
-                // 基于准备好的dom，初始化echarts实例
-                var myChart = this.$echarts.init(document.getElementById('main'));
-
-                // 指定图表的配置项和数据
-                var option = {
-                    title: {
-                        text: 'ECharts 入门示例'
-                    },
-                    tooltip: {},
-                    legend: {
-                        data: ['销量']
-                    },
-                    xAxis: {
-                        data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
-                    },
-                    yAxis: {},
-                    series: [{
-                        name: '销量',
-                        type: 'bar',
-                        data: [5, 20, 36, 10, 10, 20]
-                    }]
-                };
-
-                // 使用刚指定的配置项和数据显示图表。
-                myChart.setOption(option);
-            },
             async getData() {
+                const {data:res} = await this.$http.post('screenInfo')
+                if (res.code !== 200) {
+                    return this.$message.error("获取数据失败")
+                }
+                this.userSize = res.data.userSize
+                this.userTrend = res.data.userList
+                this.todaySize = res.data.todaySize
+                this.alarmTrend = res.data.alarmList
+                this.alarmSize = res.data.alarmSize
+                this.latestWarning = res.data.list
+                this.radarMap = res.data.map
                 this.loading = false
             }
         }
@@ -289,8 +280,8 @@
 
             .right {
                 position: absolute;
-                margin-left: 75%;
-                width: 24%;
+                margin-left: 73%;
+                width: 25%;
                 height: 100%;
                 justify-content: center;
 

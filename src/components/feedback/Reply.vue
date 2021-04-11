@@ -2,7 +2,7 @@
     <div class="reply">
         <!--    面包屑导航区-->
         <el-breadcrumb separator-class="el-icon-arrow-right">
-            <el-breadcrumb-item :to="{path:'/adminHome'}">首页</el-breadcrumb-item>
+<!--            <el-breadcrumb-item :to="{path:'/adminHome'}">首页</el-breadcrumb-item>-->
             <el-breadcrumb-item :to="{path:'/feedback'}">工单管理</el-breadcrumb-item>
             <el-breadcrumb-item>工单处理</el-breadcrumb-item>
         </el-breadcrumb>
