@@ -129,13 +129,6 @@
                 if (this.queryForm.user_phone !== "") {
                     formData.append('user_phone',this.queryForm.user_phone)
                 }
-                // if (this.queryForm.register_time !== "") {
-                //     console.log(this.queryForm.register_time)
-                //     formData.append('register_time',this.queryForm.register_time)
-                // }
-                // if (this.queryForm.user_name !== "") {
-                //     formData.append('user_name',this.queryForm.user_name)
-                // }
                 const {data: res} = await this.$http.post('userInfo', this.queryForm)
                 if (res.code !== 200) {
                     return this.$message.error("查询用户失败")

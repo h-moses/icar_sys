@@ -50,6 +50,8 @@
                         this.loading = false
                         return this.$message.error("登录失败")
                     }
+                    window.sessionStorage.setItem("adminName",res.data.admin['adminName'])
+                    window.sessionStorage.setItem("adminID",res.data.admin['adminID'])
                     window.sessionStorage.setItem('token',res.data['token'])
                     this.$message.success("登录成功")
                     await this.$router.push('/adminHome')

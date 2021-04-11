@@ -45,8 +45,8 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="showReplyPage(scope.row)" icon="el-icon-edit" size="mini" type="warning">处理</el-button>
-                        <el-button @click="deleteOrder(scope.row)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
+                        <el-button @click="showReplyPage(scope.row.feedbackID)" icon="el-icon-edit" size="mini" type="warning">处理</el-button>
+                        <el-button @click="deleteOrder(scope.row.feedbackID)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -107,11 +107,11 @@
             this.getFeedbackList()
         },
         methods: {
-            showReplyPage(row) {
-                this.$router.push(`/reply/${row.feedbackID}`)
+            async showReplyPage(feedbackID) {
+                await this.$router.push(`/reply/${feedbackID}`)
             },
-            async deleteOrder(row) {
-                const confirmResult = await this.$confirm('确认删除该条工单记录?', '删除工单记录', {
+            async deleteOrder(feedbackID) {
+                const confirmResult = await this.$confirm('确认删除此工单?', '删除工单', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     showCancelButton: true,
@@ -120,8 +120,7 @@
                 if (confirmResult !== 'confirm') {
                     return this.$message.info('取消删除')
                 }
-                const data = new FormData()
-                data.append('feedback_id', row.feedbackID)
+                const data = {'feedback_id': feedbackID}
                 const {data: res} = await this.$http.post('feedback/delete', data)
                 if (res.code !== 200) {
                     return this.$message.error("删除失败")

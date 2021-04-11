@@ -12,10 +12,28 @@
         </el-row>
         <el-card v-loading="loading">
             <el-row :gutter="2" class="order-header">
-                <el-col :key="index" :span="6" v-for="(item,index) in orderList">
+                <el-col :span="6">
                     <div>
-                        <span>{{order_titles[index]}}</span>
-                        <span>{{item}}</span>
+                        <span>{{order_titles['feedbackID']}}</span>
+                        <span>{{orderList.feedbackID}}</span>
+                    </div>
+                </el-col>
+                <el-col :span="6">
+                    <div>
+                        <span>{{order_titles['userName']}}</span>
+                        <span>{{orderList.userName}}</span>
+                    </div>
+                </el-col>
+                <el-col :span="6">
+                    <div>
+                        <span>{{order_titles['feedbackTime']}}</span>
+                        <span>{{orderList.feedbackTime}}</span>
+                    </div>
+                </el-col>
+                <el-col :span="6">
+                    <div>
+                        <span>{{order_titles['feedbackState']}}</span>
+                        <span>{{orderList.feedbackState}}</span>
                     </div>
                 </el-col>
             </el-row>
@@ -23,11 +41,11 @@
             <el-row class="order-content">
                 <el-col>
                     <div>工单内容</div>
-                    <el-input autosize readonly type="textarea" v-model="this.feedbackContent"></el-input>
-                    <el-row v-if="this.feedbackPics.length !== 0">
+                    <el-input autosize readonly type="textarea" v-model="orderList.feedbackContent"></el-input>
+                    <el-row>
                         <div>上传材料</div>
-                        <viewer :images="this.feedbackPics" :navbar="false" :toolbar="false" class="viewer" inline>
-                            <img :key="src" :src="src" alt="" class="provedImage" v-for="src in this.feedbackPics" width="50">
+                        <viewer :images="[orderList.feedbackPic]" :navbar="false" :toolbar="false" class="viewer" inline>
+                            <img :src="orderList.feedbackPic" alt="" class="provedImage" width="50">
                         </viewer>
                     </el-row>
                 </el-col>
@@ -76,22 +94,14 @@
         name: "Reply",
         data() {
             return {
-                orderList: {
-                    'feedbackID': '',
-                    'userID': '',
-                    'feedbackTime': '',
-                    'feedbackState': '',
-                },
+                orderList: {},
                 order_titles: {
                     'feedbackID': '工单编号：',
-                    'userID': '提交账号：',
+                    'userName': '提交账号：',
                     'feedbackTime': '提交时间：',
                     'feedbackState': '状态：',
                 },
-                feedbackContent: '',
-                feedbackPics: [],
                 replyContent: '',
-                uploadImages: ['https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png', 'https://cube.elemecdn.com/0/c7/731d222b16d4537c0dcb5dfdc0402svg.svg', 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png', 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'],
                 dialogImageUrl: '',
                 dialogVisible: false,
                 disabled: false,
@@ -108,12 +118,7 @@
                 if (res.code !== 200) {
                     return this.$message.error("获取失败")
                 }
-                this.orderList.feedbackID = res.data.feedback.feedbackID
-                this.orderList.userID = res.data.feedback.userID
-                this.orderList.feedbackTime = res.data.feedback.feedbackTime
-                this.orderList.feedbackState = res.data.feedback.feedbackState === 0 ? '未处理' : (res.data.feedback.feedbackState === 1 ? '处理中' : '已处理')
-                this.feedbackContent = res.data.feedback.feedbackContent
-                this.feedbackPics = res.data.feedback.feedbackPics
+                this.orderList = res.data.feedback
                 this.loading = false
             },
             // 删除上传图片
@@ -140,6 +145,9 @@
                 }
             },
             async reply() {
+                if (this.replyContent.length === 0) {
+                    return this.$message.info("回复内容为空")
+                }
                 const confirmResult = await this.$confirm('确认回复内容?', '工单处理', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -149,7 +157,15 @@
                 if (confirmResult !== 'confirm') {
                     return
                 }
+                const data = {}
+                data['feedback_id'] = this.orderList['feedbackID']
+                data['admin_id'] = window.sessionStorage.getItem('adminID')
+                data['reply_content'] = this.replyContent
                 this.$refs.upload.submit()
+                const {data:res} = await this.$http.post('feedback/reply',data)
+                if (res.code !== 200) {
+                    return this.$message.error("回复失败")
+                }
                 this.$message.success("回复成功")
                 this.$router.back()
             },
@@ -229,15 +245,17 @@
 
         /deep/ .btn-reply {
             width: 100px;
-            background-color: #849FC4;
+            background-color: #6C75D1;
             border: 1px solid #cccccc;
+            border-radius: 0;
         }
 
         /deep/ .btn-back {
             width: 100px;
-            background-color: #DFA583;
+            background-color: #BB3B44;
             border: 1px solid #cccccc;
             margin-left: 20px;
+            border-radius: 0;
         }
 
     }
