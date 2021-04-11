@@ -17,10 +17,10 @@
                             </el-col>
                             <el-col :span="20">
                                 <el-row>
-                                    <span>h_admin</span>
+                                    <span>adminID：{{this.adminID}}</span>
                                 </el-row>
                                 <el-row>
-                                    <span>709820314</span>
+                                    <span>adminName：{{this.adminName}}</span>
                                 </el-row>
                             </el-col>
                         </el-row>
@@ -82,11 +82,14 @@
                 },
                 topBarFixed: false,
                 isCollapsed: false,
-                transitionName:''
+                transitionName:'',
+                adminName: '',
+                adminID: ''
             }
         },
         created() {
-
+            this.adminName = window.sessionStorage.getItem('adminName')
+            this.adminID = window.sessionStorage.getItem('adminID')
         },
         mounted() {
             this.activePath = this.$route.path
@@ -102,6 +105,7 @@
         },
         methods: {
             async logout() {
+                window.sessionStorage.clear()
                 await this.$router.push('/')
             },
             changeCollapse() {
