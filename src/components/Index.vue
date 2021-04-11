@@ -173,8 +173,6 @@
         position: relative;
         height: 100%;
         display: flex;
-        /*background: #061437 url("../assets/bk_logo.png") no-repeat center;*/
-        /*background-size: 30%;*/
         background-color: #061437;
 
         .header {
@@ -292,7 +290,7 @@
             .right {
                 position: absolute;
                 margin-left: 75%;
-                width: 25%;
+                width: 24%;
                 height: 100%;
                 justify-content: center;
 
