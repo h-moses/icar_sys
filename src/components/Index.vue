@@ -55,9 +55,7 @@
                             <dv-decoration-11 class="title-board">实时预警事件</dv-decoration-11>
                             <dv-scroll-board :config="warning_board" class="warning-board"/>
                             <dv-decoration-11 class="title-rank">预警数城市排行</dv-decoration-11>
-<!--                            <dv-border-box-7 class="border-rank" style="box-shadow: #096798 0 0 40px inset; border: 1px solid #096798">-->
                                 <dv-capsule-chart :config="config" class="warning-rank"/>
-<!--                            </dv-border-box-7>-->
                         </el-col>
                     </div>
                 </el-row>

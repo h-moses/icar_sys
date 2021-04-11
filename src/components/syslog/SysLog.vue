@@ -7,17 +7,17 @@
         </el-breadcrumb>
         <el-card v-loading="loading">
             <el-form :inline="true" :model="queryLogForm" ref="queryLogFormRules">
-                <el-form-item label="日志时间" prop="logDateTime">
+                <el-form-item label="日志时间" prop="date">
                     <el-date-picker
                             format="yyyy 年 MM 月 dd 日"
                             placeholder="选择日期"
                             type="date"
-                            v-model="queryLogForm.logDateTime"
+                            v-model="queryLogForm.date"
                             value-format="yyyy-MM-dd">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="日志类型" prop="logType">
-                    <el-select clearable placeholder="请选择日志类型" v-model="queryLogForm.logType">
+                <el-form-item label="日志类型" prop="type">
+                    <el-select clearable placeholder="请选择日志类型" v-model="queryLogForm.type">
                         <el-option :key="item.value" :label="item.label" :value="item.value" v-for="item in this.logTypes"></el-option>
                     </el-select>
                 </el-form-item>
@@ -25,16 +25,16 @@
                     <el-button @click="searchLog" icon="el-icon-search" plain size="small" type="primary">查询</el-button>
                 </el-form-item>
             </el-form>
-            <el-table :data="this.logList" border stripe>
+            <el-table :data="logList" border stripe>
                 <el-table-column align="center" label="序号" type="index" width="100px"></el-table-column>
-                <el-table-column align="center" label="日志编号" prop="userName"></el-table-column>
-                <el-table-column align="center" label="日志时间" prop="userName"></el-table-column>
-                <el-table-column align="center" label="组件实例" prop="userPhone"></el-table-column>
-                <el-table-column align="center" label="日志描述" prop="registerTime"></el-table-column>
+                <el-table-column align="center" label="日志编号" prop="logID"></el-table-column>
+                <el-table-column align="center" label="日志时间" prop="logTime"></el-table-column>
+                <el-table-column align="center" label="组件实例" prop="reportObj"></el-table-column>
+                <el-table-column align="center" label="日志描述" prop="logDescription"></el-table-column>
 <!--                <el-table-column align="center" label="错误定位" prop="registerTime"></el-table-column>-->
                 <el-table-column align="center" label="日志类型" prop="logType">
                     <template slot-scope="scope">
-                        <el-tag :type="this.typesTag[scope.row.logType]">{{scope.row.logType}}</el-tag>
+                        <el-tag :type="typesTag[scope.row.logType]">{{scope.row.logType}}</el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="操作">
@@ -54,8 +54,8 @@
         data() {
             return {
                 queryLogForm: {
-                    logDateTime: '',
-                    logType: ''
+                    date: '',
+                    type: ''
                 },
                 logTypes: [
                     {
@@ -63,7 +63,7 @@
                         'label': '错误'
                     },
                     {
-                        'value': 'warning',
+                        'value': 'warn',
                         'label': '警告'
                     }
                 ],
@@ -72,7 +72,7 @@
                 loading: false,
                 typesTag: {
                     'error':'danger',
-                    'warning':'warning'
+                    'warn':'warning'
                 }
             }
         },
@@ -82,10 +82,25 @@
         },
         methods: {
             async searchLog() {
-
+                const data = {}
+                if (this.queryLogForm.date !== '') {
+                    data['date'] = this.queryLogForm.date
+                }
+                if (this.queryLogForm.type !== '') {
+                    data['type'] = this.queryLogForm.type
+                }
+                const {data:res} = await this.$http.post('viewLog',data)
+                if (res.code !== 200) {
+                    return this.$message.error('查询日志失败')
+                }
+                this.logList = res.data.logs
             },
             async getLogList() {
-                // const {data:res} = await this.$http.post('syslog')
+                const {data:res} = await this.$http.post('viewLog')
+                if (res.code !== 200) {
+                    return this.$message.error("获取日志失败")
+                }
+                this.logList = res.data.logs
                 this.loading = false
             }
         }

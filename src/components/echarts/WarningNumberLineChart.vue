@@ -30,9 +30,6 @@
         },
         mounted() {
             this.$nextTick(() => {
-                if (this.chartData === null) {
-                    console.log("null")
-                }
                 this.initChart()
             })
         },
@@ -46,14 +43,8 @@
         watch: {
             chartData: {
                 deep: true,
-                handler(value) {
-                    for (let i = 0;i < value.length; ++i) {
-                        this.months[i] = value[i].month
-                        this.nums[i] = value[i].num
-                    }
-                    console.log("months:" + this.months)
-                    console.log("nums:" + this.nums)
-                    this.setOption()
+                handler(val) {
+                    this.setOption(val)
                 }
             }
         },
@@ -69,8 +60,13 @@
                 this.chart = echarts.init(this.$el, 'macarons')
                 this.setOptions(this.chartData)
             },
-            setOptions() {
+            setOptions(val) {
                 let option;
+
+                for (let i = 0;i < val.length;++i) {
+                    this.months.push(val[i].month + '月')
+                    this.nums.push(val[i].num)
+                }
                 option = {
                     xAxis: {
                         type: 'category',
