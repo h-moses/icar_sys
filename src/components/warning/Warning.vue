@@ -57,7 +57,7 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <!--            <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="5" :page-sizes="[1,2,5,10]" :page-size="5" layout="total,sizes,prev,pager,next,jumper" :total="20"></el-pagination>-->
+            <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="queryInfo.currentPage" :page-sizes="[1,2,5,10]" :page-size="queryInfo.pageSize" layout="total,sizes,prev,pager,next,jumper" :total="total"></el-pagination>
         </el-card>
         <el-dialog title="更定评级" :visible.sync="modifyDialogVisible" width="50%" @close="modifyDialogClosed">
             <el-form :model="modifyForm" ref="modifyFormRef" label-width="70px">
@@ -129,8 +129,13 @@
                     {
                         text: '三级',
                         value: '三级'
-                    },
+                    }
                 ],
+                total: 0,
+                queryInfo: {
+                    currentPage: 1,
+                    pageSize: 5
+                }
             }
         },
         created() {
@@ -138,11 +143,12 @@
         },
         methods: {
             async getWarningList() {
-                const {data: res} = await this.$http.post('alarm/view', this.queryWarningForm)
+                const {data: res} = await this.$http.post('alarm/view', this.queryInfo)
                 if (res.code !== 200) {
                     return this.$message.error("获取预警记录失败")
                 }
-                this.warningList = res.data.alarmRecord
+                this.warningList = res.data.alarmRecord['list']
+                this.total = res.data.alarmRecord['total']
                 this.loading = false
             },
             async deleteWarning(recordID) {
@@ -174,11 +180,14 @@
                 if (this.queryWarningForm.user_phone !== "") {
                     searchForm['user_phone'] = this.queryWarningForm.user_phone
                 }
+                searchForm['currentPage'] = parseInt(this.queryInfo.currentPage)
+                searchForm['pageSize'] = parseInt(this.queryInfo.pageSize)
                 const {data: res} = await this.$http.post('alarm/view', searchForm)
                 if (res.code !== 200) {
                     return this.$message.error("查询失败")
                 }
-                this.warningList = res.data.alarmRecord
+                this.warningList = res.data.alarmRecord['list']
+                this.total = res.data.alarmRecord['total']
             },
             modifyDialogClosed() {
                 this.$refs.modifyFormRef.resetFields()
@@ -200,6 +209,14 @@
             handleFilter(value,row,column) {
                 const property = column['property']
                 return row[property] === value
+            },
+            handleSizeChange(newSize) {
+                this.queryInfo.pageSize = newSize
+                this.searchWarning()
+            },
+            handleCurrentChange(newPage) {
+                this.queryInfo.currentPage = newPage
+                this.searchWarning()
             }
         },
 

@@ -8,10 +8,10 @@
         <el-card v-loading="loading">
             <el-form :inline="true" :model="queryForm" ref="searchUserFormRef">
                 <el-form-item label="登录账号" prop="user_name">
-                    <el-input placeholder="请输入登录账号" v-model="queryForm.user_name" @keyup.enter.native="searchUser"></el-input>
+                    <el-input placeholder="请输入登录账号" v-model="queryForm.user_name" @keyup.enter.native="searchUser" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="联系电话" prop="user_phone">
-                    <el-input placeholder="请输入联系电话" v-model="queryForm.user_phone" @keyup.enter.native="searchUser"></el-input>
+                    <el-input placeholder="请输入联系电话" v-model="queryForm.user_phone" @keyup.enter.native="searchUser" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="注册时间" prop="register_time">
                     <el-date-picker placeholder="选择注册日期" ref="RegisterTimePickerRef" type="date" v-model="queryForm.register_time" value-format="yyyy-MM-dd"></el-date-picker>
@@ -39,7 +39,7 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <!--            <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="5" :page-sizes="[1,2,5,10]" :page-size="5" layout="total,sizes,prev,pager,next,jumper" :total="this.total"></el-pagination>-->
+            <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="queryInfo.currentPage" :page-sizes="[1,2,5,10]" :page-size="queryInfo.pageSize" layout="total,sizes,prev,pager,next,jumper" :total="total"></el-pagination>
         </el-card>
     </div>
 </template>
@@ -81,19 +81,26 @@
                     'B':'primary',
                     'C':'warning',
                     'D':'danger'
-                }
+                },
+                queryInfo: {
+                    currentPage: 1,
+                    pageSize: 5
+                },
+                total: 0
             }
         },
         created() {
             this.getUserList()
         },
         methods: {
-            // handleSizeChange() {
-            //
-            // },
-            // handleCurrentChange() {
-            //
-            // },
+            handleSizeChange(newSize) {
+                this.queryInfo.pageSize = newSize
+                this.searchUser()
+            },
+            handleCurrentChange(newPage) {
+                this.queryInfo.currentPage = newPage
+                this.searchUser()
+            },
             async showUserDetails(user_phone) {
                 await this.$router.push({name: 'Detail', params: {'user_phone':user_phone}})
             },
@@ -117,25 +124,37 @@
                 await this.getUserList()
             },
             async getUserList() {
-                const {data: res} = await this.$http.post('userInfo')
+                const {data: res} = await this.$http.post('userInfo',this.queryInfo)
                 if (res.code !== 200) {
                     return this.$message.error("获取用户记录失败")
                 }
-                this.userList = res.data.users
+                this.userList = res.data.users['list']
+                this.total = res.data.users['total']
                 this.loading = false
             },
             async searchUser() {
-                const formData = new FormData()
-                if (this.queryForm.user_phone !== "") {
-                    formData.append('user_phone',this.queryForm.user_phone)
+                const searchForm = {}
+                if (this.queryForm.user_name !== "") {
+                    searchForm['user_name'] = this.queryForm.user_name
                 }
-                const {data: res} = await this.$http.post('userInfo', this.queryForm)
+                if (this.queryForm.user_phone !== "") {
+                    searchForm['user_phone'] = this.queryForm.user_phone
+                }
+                if (this.queryForm.register_time !== '') {
+                    if (this.queryForm.register_time !== null) {
+                        searchForm['register_time'] = this.queryForm.register_time
+                    }
+                }
+                searchForm['currentPage'] = parseInt(this.queryInfo.currentPage)
+                searchForm['pageSize'] = parseInt(this.queryInfo.pageSize)
+                console.log(searchForm)
+                const {data: res} = await this.$http.post('userInfo', searchForm)
                 if (res.code !== 200) {
                     return this.$message.error("查询用户失败")
                 }
-                console.log(res.data.users)
                 this.$message.success("查询用户成功")
-                this.userList = res.data.users
+                this.userList = res.data.users['list']
+                this.total = res.data.users['total']
             },
             handleFilter(value,row,column) {
                 const property = column['property']

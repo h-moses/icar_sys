@@ -70,17 +70,14 @@
         },
         methods: {
             async getUserDetail() {
-                const data = new FormData()
-                data.append("user_phone",this.$route.params['user_phone'])
-                const {data: res} = await this.$http.post('userInfo',data)
+                const data = {}
+                data['user_phone'] = this.$route.params['user_phone']
+                const {data: res} = await this.$http.post('userInfo/edit',data)
                 if (res.code !== 200) {
                     return this.$message.error("获取用户详情失败")
                 }
-                this.userDetail = res.data.users[0]
+                this.userDetail = res.data.users
                 this.loading = false
-            },
-            async saveModification() {
-
             },
             back() {
                 this.$router.back()
