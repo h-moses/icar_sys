@@ -53,7 +53,7 @@
                     <div class="right">
                         <el-col>
                             <dv-decoration-11 class="title-board">实时预警事件</dv-decoration-11>
-                            <dv-scroll-board :config="warning_board" class="warning-board"/>
+                            <scroll-board class-name="warning_board" :data-config="latestWarning"/>
                             <dv-decoration-11 class="title-rank">预警数城市排行</dv-decoration-11>
                                 <dv-capsule-chart :config="config" class="warning-rank"/>
                         </el-col>
@@ -70,12 +70,13 @@
    import WarningDegreeRadarChart from "./echarts/WarningDegreeRadarChart"
    import WarningNumberLineChart from "./echarts/WarningNumberLineChart"
    import VueCoreVideoPlayer from 'vue-core-video-player'
+   import ScrollBoard from "./echarts/ScrollBoard";
 
    Vue.use(dataV)
    Vue.use(VueCoreVideoPlayer)
     export default {
         name: "Index",
-        components: { WarningNumberLineChart, WarningDegreeRadarChart},
+        components: {ScrollBoard, WarningNumberLineChart, WarningDegreeRadarChart},
         data() {
             return {
                 loading: true,
@@ -105,32 +106,17 @@
                     unit: '起',
                     showValue: true
                 },
-                warning_board: {
-                    header: ['用户', '描述', '距离', '风险等级'],
-                    data: this.latestWarning,
-                    align: ['center'],
-                    columnWidth: [95],
-                    headerBGC: 'transparent',
-                    oddRowBGC: 'transparent',
-                    evenRowBGC: '#2B3043',
-                    rowNum: 6,
-                },
                 userSize: 0,
                 userTrend: [],
                 todaySize: 0,
                 alarmTrend: [],
                 alarmSize: 0,
-                latestWarning: [],
-                radarMap: {}
+                latestWarning: undefined,
+                radarMap: {},
             }
         },
         created() {
             this.getData()
-        },
-        watch: {
-            latestWarning: {
-                deep: true,
-            }
         },
         methods: {
             async getData() {
@@ -285,7 +271,7 @@
                     margin: 0 0 20px 0;
                 }
 
-                /deep/ .warning-board {
+                .dv-scroll-board {
                     width: 97%;
                     height: 250px;
                 }
