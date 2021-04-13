@@ -5,13 +5,11 @@
 <script>
     import echarts from 'echarts'
     require('echarts/theme/macarons')
-    import resize from "./mixins/resize";
 
     const animationDuration = 3000
 
     export default {
         name: "WarningDegreeRadarChart",
-        mixins:[resize],
         props:{
             className: {
                 type: String,

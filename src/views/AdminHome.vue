@@ -33,7 +33,7 @@
             </div>
         </el-header>
         <el-container>
-            <el-aside :width="this.isCollapsed ? '50px': '180px'">
+            <el-aside :width="this.isCollapsed ? '50px': '160px'">
                 <el-menu :collapse="this.isCollapsed" :collapse-transition="false" :default-active="activePath"
                          active-text-color="#409eff"
                          background-color="#263445"
@@ -193,6 +193,10 @@
                     align-items: center;
                 }
             }
+        }
+
+        .el-menu--collapse {
+            width: 50px;
         }
     }
 

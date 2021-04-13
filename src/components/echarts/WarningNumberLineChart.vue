@@ -5,11 +5,9 @@
 <script>
     import echarts from 'echarts'
     require('echarts/theme/macarons')
-    import resize from "./mixins/resize";
 
     export default {
         name: "WarningNumberLineChart",
-        mixins:[resize],
         props:{
             className: {
                 type: String,

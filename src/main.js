@@ -48,19 +48,25 @@ Date.prototype.format = function(fmt){
     return fmt;
 }
 
-Vue.config.errorHandler = function (err, vm, info) {
+Vue.config.errorHandler = async function (err, vm, info) {
     if (vm) {
-        console.log("Error:" + err.toString())
-        console.log("vm:" + vm.toString())
-        console.log("info:" + info.toString())
+        const data = {}
+        data['logTime'] = new Date().format('yyyy-MM-dd hh:mm:ss')
+        data['reportObj'] = vm.toString()
+        data['logDescription'] = err.toString()
+        data['componentLoc'] = info
+        data['logType'] = 'error'
     }
 }
-Vue.config.warnHandler = function (msg, vm, trace) {
+Vue.config.warnHandler = async function (msg, vm, trace) {
     if (vm) {
-        console.log(new Date().format("yyyy-MM-dd hh:mm:ss"))
-        console.log("msg:" + msg)
-        console.log("vm:" + vm.toString())
-        console.log("trace:" + trace)
+        const data = {}
+        data['logTime'] = new Date().format('yyyy-MM-dd hh:mm:ss')
+        data['reportObj'] = vm.toString()
+        data['logDescription'] = msg
+        data['componentLoc'] = trace
+        data['logType'] = 'warn'
+        await vm.$http.post('uploadLog',data)
     }
 }
 Vue.config.productionTip = false
