@@ -31,7 +31,6 @@
                 <el-table-column align="center" label="日志时间" prop="logTime"></el-table-column>
                 <el-table-column align="center" label="组件实例" prop="reportObj"></el-table-column>
                 <el-table-column align="center" label="日志描述" prop="logDescription"></el-table-column>
-<!--                <el-table-column align="center" label="错误定位" prop="registerTime"></el-table-column>-->
                 <el-table-column align="center" label="日志类型" prop="logType">
                     <template slot-scope="scope">
                         <el-tag :type="typesTag[scope.row.logType]">{{scope.row.logType}}</el-tag>
@@ -39,11 +38,10 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="deleteUserInfo(scope.row)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
+                        <el-button @click="deleteLog(scope.row.logID)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
-            <!--            <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="5" :page-sizes="[1,2,5,10]" :page-size="5" layout="total,sizes,prev,pager,next,jumper" :total="this.total"></el-pagination>-->
         </el-card>
     </div>
 </template>
@@ -102,6 +100,23 @@
                 }
                 this.logList = res.data.logs
                 this.loading = false
+            },
+            async deleteLog(logId) {
+                const confirmResult = await this.$confirm('确认删除该日志?', '删除日志', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    showCancelButton: true,
+                    type: 'warning'
+                }).catch(err => err)
+                if (confirmResult !== 'confirm') {
+                    return this.$message.info('取消删除')
+                }
+                const {data: res} = await this.$http.post('deleteLog', {'logId':logId})
+                if (res.code !== 200) {
+                    return this.$message.error("删除失败")
+                }
+                this.$message.success("成功删除")
+                await this.getLogList()
             }
         }
     }

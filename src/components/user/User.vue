@@ -35,7 +35,7 @@
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
                         <el-button @click="showUserDetails(scope.row.userPhone)" icon="el-icon-view" size="mini" type="primary">查看</el-button>
-                        <el-button @click="deleteUserInfo(scope.row.userPhone)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
+                        <el-button @click="deleteUserInfo(scope.row.userID)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -104,7 +104,7 @@
             async showUserDetails(user_phone) {
                 await this.$router.push({name: 'Detail', params: {'user_phone':user_phone}})
             },
-            async deleteUserInfo(user_phone) {
+            async deleteUserInfo(userID) {
                 const confirmResult = await this.$confirm('确认删除该用户?', '删除用户', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -114,9 +114,7 @@
                 if (confirmResult !== 'confirm') {
                     return this.$message.info('取消删除用户')
                 }
-                // const params = new FormData()
-                // params.append('user_id', user_phone)
-                const {data: res} = await this.$http.post('deleteUser', user_phone)
+                const {data: res} = await this.$http.post('deleteUser', {'user_id':userID})
                 if (res.code !== 200) {
                     return this.$message.error("删除用户失败")
                 }

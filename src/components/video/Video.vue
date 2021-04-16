@@ -71,7 +71,6 @@
                 selectedDate: [],
                 scanDialogVisible: false,
                 videoSrc: '',
-                // client: null
             }
         },
         created() {
@@ -96,7 +95,6 @@
             async searchVideo() {
                 const searchForm = {}
                 if (this.selectedDate.length > 0) {
-                    console.log(this.selectedDate)
                     searchForm['start'] = this.selectedDate[0]
                     searchForm['end'] = this.selectedDate[1]
                 }
