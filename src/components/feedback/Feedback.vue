@@ -12,7 +12,7 @@
                     <el-input placeholder="请输入联系电话" v-model="feedbackForm.user_phone" @keyup.enter.native="searchOrder" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="处理状态" prop="feedback_state">
-                    <el-select placeholder="请选择处理状态" v-model="feedbackForm.feedback_state">
+                    <el-select placeholder="请选择处理状态" v-model="feedbackForm.feedback_state" clearable>
                         <el-option :key="item.value" :label="item.label" :value="item.label" v-for="item in this.feedback_states"></el-option>
                     </el-select>
                 </el-form-item>

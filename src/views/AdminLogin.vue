@@ -31,10 +31,10 @@
                 },
                 loginFormRules: {
                     admin_name: [
-                        {required: true, message: '请输入登录账号', trigger: 'blur'},
+                        {required: true, message: '请输入登录账号', trigger: 'blur'}
                     ],
                     admin_pwd: [
-                        {required: true, message: '请输入密码', trigger: 'blur'},
+                        {required: true, message: '请输入密码', trigger: 'blur'}
                     ]
                 },
                 loading: false

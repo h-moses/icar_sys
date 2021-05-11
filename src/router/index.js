@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-03-19 20:06:47
+ * @LastEditTime: 2021-05-10 13:53:17
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \undefinede:\workspace_web\icar_sys\src\router\index.js
+ */
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import AdminHome from "../views/AdminHome";
