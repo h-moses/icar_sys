@@ -6,7 +6,6 @@
             <el-breadcrumb-item>用户管理</el-breadcrumb-item>
         </el-breadcrumb>
         <el-card v-loading="loading">
-            <el-button class="add-button" type="warning" size="mini" @click="showDialog" icon="el-icon-plus" plain>新增用户</el-button>
             <el-form :inline="true" :model="queryForm" ref="searchUserFormRef">
                 <el-form-item label="登录账号" prop="user_name">
                     <el-input placeholder="请输入登录账号" v-model="queryForm.user_name" @keyup.enter.native="searchUser" clearable></el-input>
@@ -18,9 +17,10 @@
                     <el-date-picker placeholder="选择注册日期" ref="RegisterTimePickerRef" type="date" v-model="queryForm.register_time" value-format="yyyy-MM-dd"></el-date-picker>
                 </el-form-item>
                 <el-form-item>
-                    <el-button @click="searchUser" icon="el-icon-search" plain size="small" type="primary">查询</el-button>
+                    <el-button @click="searchUser" icon="el-icon-search" size="small" type="primary">查询</el-button>
                 </el-form-item>
             </el-form>
+            <el-button class="add-button" type="primary" size="mini" @click="showDialog" icon="el-icon-plus" plain>新增</el-button>
             <el-table :data="this.userList" border stripe>
                 <el-table-column align="center" label="序号" type="index" width="100px"></el-table-column>
                 <el-table-column align="center" label="用户名称" prop="userName"></el-table-column>
