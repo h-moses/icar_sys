@@ -17,7 +17,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button @click="searchOrder" icon="el-icon-search" plain size="small" type="primary">查询</el-button>
+                    <el-button @click="searchOrder" icon="el-icon-search" size="small" type="primary">查询</el-button>
                 </el-form-item>
             </el-form>
             <el-table :data="this.feedbackList" border stripe v-loading="loading">
@@ -45,8 +45,8 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="showReplyPage(scope.row.feedbackID)" icon="el-icon-edit" size="mini" type="warning">处理</el-button>
-                        <el-button @click="deleteOrder(scope.row.feedbackID)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
+                        <el-button @click="showReplyPage(scope.row.feedbackID)" icon="el-icon-edit" size="mini" type="warning" plain>处理</el-button>
+                        <el-button @click="deleteOrder(scope.row.feedbackID)" icon="el-icon-delete" size="mini" type="danger" plain>删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

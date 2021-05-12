@@ -35,8 +35,8 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="showUserDetails(scope.row.userPhone)" icon="el-icon-view" size="mini" type="primary">查看</el-button>
-                        <el-button @click="deleteUserInfo(scope.row.userID)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
+                        <el-button @click="showUserDetails(scope.row.userPhone)" icon="el-icon-view" size="mini" type="primary" plain>查看</el-button>
+                        <el-button @click="deleteUserInfo(scope.row.userID)" icon="el-icon-delete" size="mini" type="danger" plain>删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

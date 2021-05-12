@@ -22,7 +22,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button @click="searchLog" icon="el-icon-search" plain size="small" type="primary">查询</el-button>
+                    <el-button @click="searchLog" icon="el-icon-search" size="small" type="primary">查询</el-button>
                 </el-form-item>
             </el-form>
             <el-table :data="logList" border stripe>

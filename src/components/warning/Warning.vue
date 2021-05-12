@@ -26,7 +26,7 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item>
-                    <el-button @click="searchWarning" icon="el-icon-search" plain size="small" type="primary">查询</el-button>
+                    <el-button @click="searchWarning" icon="el-icon-search" size="small" type="primary">查询</el-button>
                 </el-form-item>
             </el-form>
             <el-table :data="this.warningList" border stripe v-loading="loading">
@@ -52,8 +52,8 @@
 <!--                </el-table-column>-->
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="visualDialog(scope.row.recordID,scope.row.alarmDegree)" icon="el-icon-edit" size="mini" type="warning">更定</el-button>
-                        <el-button @click="deleteWarning(scope.row.recordID)" icon="el-icon-delete" size="mini" type="danger">删除</el-button>
+                        <el-button @click="visualDialog(scope.row.recordID,scope.row.alarmDegree)" icon="el-icon-edit" size="mini" type="warning" plain>更定</el-button>
+                        <el-button @click="deleteWarning(scope.row.recordID)" icon="el-icon-delete" size="mini" type="danger" plain>删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

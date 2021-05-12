@@ -22,7 +22,7 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item>
-                    <el-button icon="el-icon-search" plain size="small" type="primary" @click="searchVideo">查询</el-button>
+                    <el-button icon="el-icon-search" size="small" type="primary" @click="searchVideo">查询</el-button>
                 </el-form-item>
             </el-form>
             <el-table :data="videoList" border stripe>
@@ -33,9 +33,9 @@
                 <el-table-column align="center" label="记录时长" prop="videoDuration"></el-table-column>
                 <el-table-column align="center" label="操作" width="300px">
                     <template slot-scope="scope">
-                        <el-button @click="scanVideo(scope.row.videoLink)" icon="el-icon-view" size="mini" type="primary">预览</el-button>
+                        <el-button @click="scanVideo(scope.row.videoLink)" icon="el-icon-view" size="mini" type="primary" plain>预览</el-button>
 <!--                        <el-button icon="el-icon-download" size="mini" type="warning" @click="downloadVideo">下载</el-button>-->
-                        <el-button icon="el-icon-delete" size="mini" type="danger" @click="deleteVideo(scope.row.videoID)">删除</el-button>
+                        <el-button icon="el-icon-delete" size="mini" type="danger" @click="deleteVideo(scope.row.videoID)" plain>删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
