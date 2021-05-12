@@ -70,6 +70,7 @@
                     '/warning': 'icar_sys icar-yujingyucefenxi',
                     '/video': 'icar_sys icarshipin2',
                     '/feedback': 'icar_sys icardrxx66',
+                    '/admin': 'icar_sys icarguanli',
                     '/syslog': 'icar_sys icarrizhi'
                 },
                 menu_item: {
@@ -78,6 +79,7 @@
                     '/warning': '预警管理',
                     '/video': '视频管理',
                     '/feedback': '工单管理',
+                    '/admin': '人员管理',
                     '/syslog': '系统日志'
                 },
                 topBarFixed: false,
