@@ -2,7 +2,6 @@
     <div class="video">
         <!--    面包屑导航区-->
         <el-breadcrumb separator-class="el-icon-arrow-right">
-<!--            <el-breadcrumb-item :to="{path:'/adminHome'}">首页</el-breadcrumb-item>-->
             <el-breadcrumb-item>视频管理</el-breadcrumb-item>
         </el-breadcrumb>
         <el-card v-loading="loading">
@@ -10,9 +9,6 @@
                 <el-form-item label="用户名称" prop="user_name">
                     <el-input placeholder="请输入用户名称" v-model="videoForm.user_name" @keyup.enter.native="searchVideo" clearable></el-input>
                 </el-form-item>
-<!--                <el-form-item label="联系方式" prop="user_phone">-->
-<!--                    <el-input placeholder="请输入手机号码" v-model="videoForm.user_phone" @keyup.enter.native="searchVideo"></el-input>-->
-<!--                </el-form-item>-->
                 <el-form-item label="拍摄时间" prop="selectedDate">
                     <el-date-picker
                             end-placeholder="结束日期"
@@ -29,7 +25,7 @@
                     <el-button icon="el-icon-search" plain size="small" type="primary" @click="searchVideo">查询</el-button>
                 </el-form-item>
             </el-form>
-            <el-table :data="this.videoList" border stripe>
+            <el-table :data="videoList" border stripe>
                 <el-table-column align="center" label="序号" type="index" width="100px"></el-table-column>
                 <el-table-column align="center" label="视频编号" prop="videoID"></el-table-column>
                 <el-table-column align="center" label="登录账号" prop="userName"></el-table-column>
@@ -38,17 +34,14 @@
                 <el-table-column align="center" label="操作" width="300px">
                     <template slot-scope="scope">
                         <el-button @click="scanVideo(scope.row.videoLink)" icon="el-icon-view" size="mini" type="primary">预览</el-button>
-                        <el-button icon="el-icon-download" size="mini" type="warning">下载</el-button>
-                        <el-button icon="el-icon-delete" size="mini" type="danger">删除</el-button>
+<!--                        <el-button icon="el-icon-download" size="mini" type="warning" @click="downloadVideo">下载</el-button>-->
+                        <el-button icon="el-icon-delete" size="mini" type="danger" @click="deleteVideo(scope.row.videoID)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
-            <!--            <el-pagination :current-page="5" :page-size="5" :page-sizes="[1,2,5,10]"-->
-            <!--                           :total="20" @current-change="handleCurrentChange" @size-change="handleSizeChange"-->
-            <!--                           background layout="total,sizes,prev,pager,next,jumper"></el-pagination>-->
         </el-card>
         <el-dialog title="视频预览" :visible.sync="scanDialogVisible" width="50%" @close="scanDialogVisibleClosed">
-            <vue-core-video-player class="video-player" :src="this.videoSrc"></vue-core-video-player>
+            <vue-core-video-player class="video-player" :src="videoSrc"></vue-core-video-player>
         </el-dialog>
     </div>
 </template>
@@ -56,9 +49,9 @@
 <script>
     import Vue from 'vue'
     import VueCoreVideoPlayer from 'vue-core-video-player'
-    // import OSS from 'ali-oss'
+    // import Client from 'ali-oss'
     //
-    // Vue.use(OSS)
+    // Vue.use(Client)
     Vue.use(VueCoreVideoPlayer)
 
     export default {
@@ -71,10 +64,12 @@
                 selectedDate: [],
                 scanDialogVisible: false,
                 videoSrc: '',
+                // client: null
             }
         },
         created() {
             this.getVideoList()
+            // this.getClient()
         },
         methods: {
             async getVideoList() {
@@ -110,24 +105,45 @@
             // getClient() {
             //     let _this = this
             //     _this.client = new OSS({
-            //         region: 'oss-cn-hangzhou',
-            //         accessKeyId: 'LTAI4FyXG841sPuGUdfXs9mU',
-            //         accessKeySecret: 'czgyprNgF3iNja37KlNth77IYHPoHF',
-            //         bucket: 'adas-car',
-            //         secure: false
+            //         region: 'oss-cn-beijing',
+            //         accessKeyId: 'LTAI5tNg9iMZjan1EGiYN6S9',
+            //         accessKeySecret: 'BbqvbhbM0Itz8JfuVV1TKAqjud1EJT',
+            //         bucket: 'car-recognition'
             //     })
             // },
-            async downloadVideo() {
-            //     this.getClient()
-            //     const filename = 'video.mp4' // 自定义文件名。
+            // async downloadVideo() {
+            //     let client = new Client({
+            //         region: 'oss-cn-beijing',
+            //         accessKeyId: 'LTAI5tNg9iMZjan1EGiYN6S9',
+            //         accessKeySecret: 'BbqvbhbM0Itz8JfuVV1TKAqjud1EJT',
+            //         bucket: 'car-recognition'
+            //     })
+            //     const filename = 'detection.mp4' // 自定义文件名。
             //     const response = {
             //         'content-disposition': `attachment; filename=${encodeURIComponent(filename)}`
             //     }
-            //     let url = await this.client.signatureUrl(videoLink, {response})
+            //     let url = await client.signatureUrl(filename, {response})
             //     const a = document.createElement('a')
             //     a.setAttribute('download','aaa')
             //     a.setAttribute('href',url)
             //     a.click()
+            // }
+            async deleteVideo(id) {
+                const confirmResult = await this.$confirm('确认删除?', '删除视频', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    showCancelButton: true,
+                    type: 'warning'
+                }).catch(err => err)
+                if (confirmResult !== 'confirm') {
+                    return this.$message.info('取消删除')
+                }
+                const {data:res} = await this.$http.post('deleteVideo',{"video_id":id})
+                if (res.code !== 200) {
+                    return this.$message.error("删除失败")
+                }
+                this.$message.success("删除成功")
+                await this.getVideoList()
             }
         }
     }

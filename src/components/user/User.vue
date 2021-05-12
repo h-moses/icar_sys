@@ -6,6 +6,7 @@
             <el-breadcrumb-item>用户管理</el-breadcrumb-item>
         </el-breadcrumb>
         <el-card v-loading="loading">
+            <el-button class="add-button" type="warning" size="mini" @click="showDialog" icon="el-icon-plus" plain>新增用户</el-button>
             <el-form :inline="true" :model="queryForm" ref="searchUserFormRef">
                 <el-form-item label="登录账号" prop="user_name">
                     <el-input placeholder="请输入登录账号" v-model="queryForm.user_name" @keyup.enter.native="searchUser" clearable></el-input>
@@ -41,6 +42,53 @@
             </el-table>
             <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="queryInfo.currentPage" :page-sizes="[1,2,5,10]" :page-size="queryInfo.pageSize" layout="total,sizes,prev,pager,next,jumper" :total="total"></el-pagination>
         </el-card>
+        <!--    添加用户对话框-->
+        <el-dialog title="添加用户" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
+            <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="70px">
+                <el-form-item label="用户名" prop="userName">
+                    <el-input v-model="addForm.userName"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" prop="userPassword">
+                    <el-input v-model="addForm.userPassword"></el-input>
+                </el-form-item>
+                <el-form-item label="真实姓名" prop="realName">
+                    <el-input v-model="addForm.realName"></el-input>
+                </el-form-item>
+                <el-form-item label="手机号码" prop="userPhone">
+                    <el-input v-model="addForm.userPhone"></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱" prop="userEmail">
+                    <el-input v-model="addForm.userEmail"></el-input>
+                </el-form-item>
+                <el-form-item label="用户性别" prop="userGender">
+                    <el-select v-model="addForm.userGender" placeholder="请选择">
+                        <el-option
+                                v-for="item in genders"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="驾车评级" prop="userRating">
+                    <el-select v-model="addForm.userRating" placeholder="请选择">
+                        <el-option
+                                v-for="item in ratings"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="亲友号码" prop="relativePhone">
+                    <el-input v-model="addForm.relativePhone"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+        <el-button @click="addDialogVisible=false" size="medium">取 消</el-button>
+        <el-button type="primary" @click="addUser" plain size="medium">确 定</el-button>
+      </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -48,6 +96,20 @@
     export default {
         name: "User",
         data() {
+            const checkEmail = (rule, value, cb) => {
+                const regEmail = /^([a-zA-Z0-9_-])+@([A-Za-z0-9_-])+(\.[a-zA-Z0-9_-])+/
+                if (regEmail.test(value)) {
+                    return cb()
+                }
+                cb(new Error('请输入合法的邮箱'))
+            }
+            const checkMobile = (rule, value, cb) => {
+                const regMobile = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]]|18[0-9]|14[57])[0-9]{8}$/
+                if (regMobile.test(value)) {
+                    return cb()
+                }
+                cb(new Error('请输入合法的手机号'))
+            }
             return {
                 queryForm: {
                     "user_name": "",
@@ -86,7 +148,59 @@
                     currentPage: 1,
                     pageSize: 5
                 },
-                total: 0
+                total: 0,
+                addDialogVisible: false,
+                addForm: {},
+                addFormRules: {
+                    userName: [
+                        {required: true, message: '请输入用户名', trigger: 'blur'},
+                    ],
+                    userPassword: [
+                        {required: true, message: '请输入密码', trigger: 'blur'},
+                    ],
+                    realName: [
+                        {required: true, message: '请输入用户名称', trigger: 'blur'},
+                    ],
+                    userEmail: [
+                        {required: true, message: '请输入邮箱', trigger: 'blur'},
+                        {validator: checkEmail, trigger: 'blur'}
+                    ],
+                    userPhone: [
+                        {required: true, message: '请输入手机号', trigger: 'blur'},
+                        {validator: checkMobile, trigger: 'blur'}
+                    ],
+                    userGender: [
+                        {required: true, message: '请选择性别', trigger: 'blur'},
+                    ]
+                },
+                genders: [
+                    {
+                        value: '男',
+                        label: '男'
+                    },
+                    {
+                        value: '女',
+                        label: '女'
+                    }
+                ],
+                ratings: [
+                    {
+                        value: 'A',
+                        label: 'A'
+                    },
+                    {
+                        value: 'B',
+                        label: 'B'
+                    },
+                    {
+                        value: 'C',
+                        label: 'C'
+                    },
+                    {
+                        value: 'D',
+                        label: 'D'
+                    }
+                ]
             }
         },
         created() {
@@ -150,13 +264,25 @@
                 if (res.code !== 200) {
                     return this.$message.error("查询用户失败")
                 }
-                this.$message.success("查询用户成功")
                 this.userList = res.data.users['list']
                 this.total = res.data.users['total']
             },
             handleFilter(value,row,column) {
                 const property = column['property']
                 return row[property] === value
+            },
+            showDialog() {
+                this.addDialogVisible = true
+            },
+            addDialogClosed() {
+                this.$refs.addFormRef.resetFields()
+            },
+            async addUser() {
+                console.log(this.addForm)
+                const {data:res} = await this.$http.post('userInfo/addUser',this.addForm)
+                if (res.code !== 200) {
+                    return this.$message.error("添加失败")
+                }
             }
         }
     }
@@ -186,6 +312,15 @@
         margin-left: 20px;
     }
 
+    /deep/ .el-form-item__content {
+        width: 200px;
+    }
+
+    /deep/ .el-form-item__label {
+        font-weight: 700;
+        font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+    }
+
     .el-select /deep/ .el-input__inner, .el-input /deep/ .el-input__inner {
         height: 32px;
         font-size: 12px;
@@ -200,5 +335,46 @@
     .el-button {
         border-radius: 1px;
         border: 1px solid #cccccc;
+    }
+
+    .add-button {
+        margin-bottom: 20px;
+    }
+
+    /deep/ .el-dialog {
+        width: 600px !important;
+        height: 450px;
+
+        .el-form-item {
+            width: 170px;
+            margin: 0 100px 20px 0;
+            display: inline-block;
+        }
+
+        .el-form-item__content {
+            width: 170px;
+            margin-left: 80px !important;
+        }
+
+        .el-form-item__label {
+            width: 80px !important;
+        }
+
+        .el-select {
+            width: 100%;
+        }
+
+        .el-input__inner {
+            width: 100%;
+        }
+
+        .el-button {
+            border-radius: 1px;
+            border: 1px solid #cccccc;
+        }
+
+        .el-dialog__footer {
+            margin-right: 40px;
+        }
     }
 </style>

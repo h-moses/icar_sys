@@ -10,7 +10,6 @@ import {Message, MessageBox} from "element-ui";
 import qs from 'qs'
 import echarts from 'echarts'
 
-
 Vue.prototype.$http = axios
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
