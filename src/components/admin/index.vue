@@ -25,14 +25,14 @@
                 <el-table-column align="center" label="最近登录" prop="lastLogin"></el-table-column>
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="amendInfo(scope.row.adminID)" icon="el-icon-edit" size="mini" type="warning" plain>修改</el-button>
-                        <el-button @click="deleteInfo(scope.row.adminName)" icon="el-icon-delete" size="mini" type="danger" plain>删除</el-button>
+                        <el-button icon="el-icon-edit" size="mini" type="warning" plain @click="showAmendDialog(scope.row)">修改</el-button>
+                        <el-button icon="el-icon-delete" size="mini" type="danger" plain @click="deleteInfo(scope.row.adminName)" >删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </el-card>
         <!--    添加用户对话框-->
-        <el-dialog title="添加用户" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
+        <el-dialog title="添加员工" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
             <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="70px">
                 <el-form-item label="员工昵称" prop="admin_name">
                     <el-input v-model="addForm.admin_name"></el-input>
@@ -65,6 +65,43 @@
         <el-button type="primary" @click="addAdmin" plain size="medium">确 定</el-button>
       </span>
         </el-dialog>
+        <!--    添加用户对话框-->
+        <el-dialog title="修改信息" :visible.sync="amendDialogVisible" width="50%">
+            <el-form :model="amendForm" :rules="amendFormRules" ref="amendFormRef" label-width="70px">
+                <el-form-item label="员工ID" prop="admin_id">
+                    <el-input v-model="amendForm.admin_id" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="员工昵称" prop="admin_name">
+                    <el-input v-model="amendForm.admin_name" @input="change"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" prop="admin_pwd">
+                    <el-input v-model="amendForm.admin_pwd" @input="change"></el-input>
+                </el-form-item>
+                <el-form-item label="真实姓名" prop="real_name">
+                    <el-input v-model="amendForm.real_name" @input="change"></el-input>
+                </el-form-item>
+                <el-form-item label="手机号码" prop="admin_phone">
+                    <el-input v-model="amendForm.admin_phone" @input="change"></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱" prop="admin_email">
+                    <el-input v-model="amendForm.admin_email" @input="change"></el-input>
+                </el-form-item>
+                <el-form-item label="员工性别" prop="admin_gender">
+                    <el-select v-model="amendForm.admin_gender" placeholder="请选择" @change="change">
+                        <el-option
+                                v-for="item in genders"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+        <el-button @click="amendDialogVisible=false" size="medium">取 消</el-button>
+        <el-button type="primary" @click="amendInfo" plain size="medium">确 定</el-button>
+      </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -89,24 +126,24 @@
             return {
                 addForm: {},
                 addFormRules: {
-                    adminName: [
+                    admin_name: [
                         {required: true, message: '请输入员工昵称', trigger: 'blur'},
                     ],
-                    adminPassword: [
+                    admin_pwd: [
                         {required: true, message: '请输入密码', trigger: 'blur'},
                     ],
-                    realName: [
+                    real_name: [
                         {required: true, message: '请输入真实姓名', trigger: 'blur'},
                     ],
-                    adminEmail: [
+                    admin_email: [
                         {required: true, message: '请输入邮箱', trigger: 'blur'},
                         {validator: checkEmail, trigger: 'blur'}
                     ],
-                    adminPhone: [
+                    admin_phone: [
                         {required: true, message: '请输入手机号码', trigger: 'blur'},
                         {validator: checkMobile, trigger: 'blur'}
                     ],
-                    adminGender: [
+                    admin_gender: [
                         {required: true, message: '请选择性别', trigger: 'blur'},
                     ]
                 },
@@ -121,8 +158,32 @@
                     }
                 ],
                 referForm: {},
+                amendForm: {},
+                amendFormRules: {
+                    admin_name: [
+                        {required: true, message: '请输入员工昵称', trigger: 'blur'},
+                    ],
+                    admin_pwd: [
+                        {required: true, message: '请输入密码', trigger: 'blur'},
+                    ],
+                    real_name: [
+                        {required: true, message: '请输入真实姓名', trigger: 'blur'},
+                    ],
+                    admin_email: [
+                        {required: true, message: '请输入邮箱', trigger: 'blur'},
+                        {validator: checkEmail, trigger: 'blur'}
+                    ],
+                    admin_phone: [
+                        {required: true, message: '请输入手机号码', trigger: 'blur'},
+                        {validator: checkMobile, trigger: 'blur'}
+                    ],
+                    admin_gender: [
+                        {required: true, message: '请选择性别', trigger: 'blur'},
+                    ]
+                },
                 adminList: [],
                 addDialogVisible: false,
+                amendDialogVisible: false
 
             }
         },
@@ -140,11 +201,20 @@
             showDialog() {
                 this.addDialogVisible = true
             },
+            showAmendDialog(info) {
+                this.amendForm.admin_id = info.adminID
+                this.amendForm.admin_name = info.adminName
+                this.amendForm.admin_pwd = info.adminPwd
+                this.amendForm.real_name = info.realName
+                this.amendForm.admin_phone = info.adminPhone
+                this.amendForm.admin_email = info.adminEmail
+                this.amendForm.admin_gender = info.adminGender
+                this.amendDialogVisible = true
+            },
             addDialogClosed() {
               this.$refs.addFormRef.resetFields()
             },
             async addAdmin() {
-                console.log(this.addForm)
                 const {data:res} = await this.$http.post('add_admin',this.addForm)
                 if (res.code !== 200) {
                     return this.$message.error('新增失败')
@@ -153,10 +223,22 @@
                 await this.getAdminList()
             },
             async referAdmin() {
-
+                console.log(this.referForm)
+                const {data:res} = await this.$http.post('query_info',this.referForm)
+                if (res.code !== 200) {
+                    return this.$message.error("查询失败")
+                }
+                this.adminList = res.data.admins
             },
             async amendInfo() {
-
+                console.log(this.amendForm)
+                const{data:res} = await this.$http.post('update_admin',this.amendForm)
+                if (res.code !== 200) {
+                    return this.$message.error('修改失败')
+                }
+                this.amendDialogVisible = false
+                await this.getAdminList()
+                this.$message.success("修改成功")
             },
             async deleteInfo(name) {
                 const confirmResult = await this.$confirm('确认删除?', '删除员工', {
@@ -174,6 +256,9 @@
                 }
                 await this.getAdminList()
                 this.$message.success("删除成功")
+            },
+            change() {
+                this.$forceUpdate()
             }
         }
     }
@@ -211,11 +296,12 @@
 
     /deep/ .el-dialog {
         width: 600px !important;
-        height: 370px;
+        height: 430px;
 
         .el-form-item {
             width: 170px;
-            margin: 0 100px 20px 0;
+            height: 30px;
+            margin: 0 100px 30px 0;
             display: inline-block;
         }
 
@@ -226,6 +312,8 @@
 
         .el-form-item__label {
             width: 80px !important;
+            font-weight: 700;
+            font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
         }
 
         .el-select {
@@ -234,6 +322,8 @@
 
         .el-input__inner {
             width: 100%;
+            height: 40px;
+            border-radius: 0;
         }
 
         .el-button {

@@ -18,6 +18,7 @@ import Reply from "../components/feedback/Reply";
 import AdminLogin from "../views/AdminLogin";
 import SysLog from "../components/syslog/SysLog";
 import index from "../components/admin/index";
+import Index from "../components/Index";
 
 Vue.use(VueRouter)
 
@@ -36,7 +37,7 @@ const routes = [
             {
                 path: '/index',
                 name: 'Index',
-                component: index
+                component: Index
             },
             {
                 path: '/user',
