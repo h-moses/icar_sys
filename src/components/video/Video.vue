@@ -102,32 +102,6 @@
                 }
                 this.videoList = res.data.videos
             },
-            // getClient() {
-            //     let _this = this
-            //     _this.client = new OSS({
-            //         region: 'oss-cn-beijing',
-            //         accessKeyId: 'LTAI5tNg9iMZjan1EGiYN6S9',
-            //         accessKeySecret: 'BbqvbhbM0Itz8JfuVV1TKAqjud1EJT',
-            //         bucket: 'car-recognition'
-            //     })
-            // },
-            // async downloadVideo() {
-            //     let client = new Client({
-            //         region: 'oss-cn-beijing',
-            //         accessKeyId: 'LTAI5tNg9iMZjan1EGiYN6S9',
-            //         accessKeySecret: 'BbqvbhbM0Itz8JfuVV1TKAqjud1EJT',
-            //         bucket: 'car-recognition'
-            //     })
-            //     const filename = 'detection.mp4' // 自定义文件名。
-            //     const response = {
-            //         'content-disposition': `attachment; filename=${encodeURIComponent(filename)}`
-            //     }
-            //     let url = await client.signatureUrl(filename, {response})
-            //     const a = document.createElement('a')
-            //     a.setAttribute('download','aaa')
-            //     a.setAttribute('href',url)
-            //     a.click()
-            // }
             async deleteVideo(id) {
                 const confirmResult = await this.$confirm('确认删除?', '删除视频', {
                     confirmButtonText: '确定',
